@@ -9,7 +9,7 @@ public class Automaton {
     private int nbStates;
     private LinkedList<State> states;
 
-    public void readAutomatonOnFile(final String filename) throws FileNotFoundException {
+    public static void readAutomatonOnFile(final String filename) {
         try {
             File automatonInformation = new File(filename);
             Scanner reader = new Scanner(automatonInformation);
