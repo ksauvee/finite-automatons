@@ -13,31 +13,44 @@ public class Automaton {
     private int nbTransitions;
     private final LinkedList<State> states;
 
-    public Automaton(final LinkedList<String> automatonInformations) {
-        nbAlphabetSymbols = Integer.parseInt(automatonInformations.get(0));
-        nbStates = Integer.parseInt(automatonInformations.get(1));
+    public Automaton(final LinkedList<String> automatonCharacteristics) {
+        // automatons characteristics are stored in String so we convert to Integer to initialize attributes
+        nbAlphabetSymbols = Integer.parseInt(automatonCharacteristics.get(0));
+        nbStates = Integer.parseInt(automatonCharacteristics.get(1));
         states = new LinkedList<>();
 
         for (int i = 0; i < nbStates; ++i) {
-            states.add(new State(String.valueOf(i)));
+            State newState = new State(String.valueOf(i));
+            states.add(newState);
         }
 
-        nbInitStates = Integer.parseInt(String.valueOf(automatonInformations.get(2).charAt(0)));
+        /* the init and exit states are stored in format : nbStates state1 state2 ...
+        so we split by whitespace to get only the ids
+         */
+        String[] initStates = automatonCharacteristics.get(2).split("\\s");
+        nbInitStates = Integer.parseInt(initStates[0]);
 
-        for (int i = 2; i < 2 * nbInitStates + 1; i += 2) {
-            states.get(Integer.parseInt(String.valueOf(automatonInformations.get(2).charAt(i)))).setIsInit(true);
+        for (int i = 0; i < nbInitStates + 1; ++i) {
+            String stateId = initStates[i];
+            states.get(Integer.parseInt(stateId)).setIsInit(true);
         }
 
-        nbExitStates = Integer.parseInt(String.valueOf(automatonInformations.get(3).charAt(0)));
+        String[] exitStates = automatonCharacteristics.get(3).split("\\s");
+        nbExitStates = Integer.parseInt(exitStates[0]);
 
-        for (int i = 2; i < 2 * nbExitStates + 1; i += 2) {
-            states.get(Integer.parseInt(String.valueOf(automatonInformations.get(3).charAt(i)))).setIsExit(true);
+        for (int i = 1; i < nbExitStates + 1; ++i) {
+            String stateId = exitStates[i];
+            states.get(Integer.parseInt(stateId)).setIsExit(true);
         }
 
-        nbTransitions = Integer.parseInt(automatonInformations.get(4));
+        nbTransitions = Integer.parseInt(automatonCharacteristics.get(4));
 
         for (int i = 0; i < nbTransitions; ++i) {
-            states.get(Integer.parseInt(String.valueOf(automatonInformations.get(5+i).charAt(0)))).addNeighbour(String.valueOf(automatonInformations.get(5+i).charAt(1)), String.valueOf(automatonInformations.get(5+i).charAt(2)));
+            String initialState = String.valueOf(automatonCharacteristics.get(5+i).charAt(0));
+            String letter = String.valueOf(automatonCharacteristics.get(5+i).charAt(1));
+            String arrivalState = String.valueOf(automatonCharacteristics.get(5+i).charAt(2));
+
+            states.get(Integer.parseInt(initialState)).addNeighbour(letter, arrivalState);
         }
     }
 

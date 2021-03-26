@@ -21,11 +21,11 @@ public class State {
         this.isExit = isExit;
     }
 
-    public void addNeighbour(final String nextState, final String c) {
+    public void addNeighbour(final String letter, final String arrivalState) {
         String[] transition = new String[2];
 
-        transition[0] = nextState;
-        transition[1] = c;
+        transition[0] = letter;
+        transition[1] = arrivalState;
 
         neighbours.add(transition);
     }
