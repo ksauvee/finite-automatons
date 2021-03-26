@@ -55,9 +55,9 @@ public class State {
 		for(int i = 0 ; i < (a.getNeighbours()).size() ; i++) {
 			for(int j = 0 ; j < (b.getNeighbours()).size();j++) {
 				if(a.getNeighbours().get(i)[0] == b.getNeighbours().get(i)[0]) {
-					String new_neigh;
+					String[] new_neigh;
 					if(a.getNeighbours().get(i)[1] == b.getNeighbours().get(i)[1]) {
-						new_neigh = a.getNeighbours().get(i)[0]+a.getNeighbours().get(i)[1];
+						new_neigh = a.getNeighbours().get(i);
 						
 					}else {
 						new_neigh = a.getNeighbours().get(i)[0]+a.getNeighbours().get(i)[1]+b.getNeighbours().get(i)[1];	

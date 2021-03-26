@@ -58,14 +58,13 @@ public class Automaton {
     
     public boolean several_entries(Automaton a) {
     	int entries_cpt = 0;   //A ce stade l'automate a zero entrée
-    	boolean entries = false; // donc le booléen est initialisé à faux (pas plus d'une entrée)
     	for(int i = 0; i < (a.states).size() ; i++) {
     		if((a.states).get(i).isInit()) { // on compte les entrées
     			entries_cpt++;
     		}
-    		entries = (entries_cpt > 1) ? true : false;  // entries est supérieur à 1 ? Si oui true sinon false
+    		if(entries_cpt > 1) return false;  // entries est supérieur à 1 ? Si oui true sinon false
     	}
-    	return entries;
+    	return true;
     }
     
     public boolean several_tr(Automaton a) {
@@ -84,10 +83,10 @@ public class Automaton {
     }
 
 	public Automaton det_sync(Automaton a){
-    	Automaton a_det = new Automaton(0, null);
     	if(is_determinist(a)) { //si l'automate est déjà déterministe
-    		a_det = a;
+    		return a;
     	}else {
+    		Automaton a_det = new Automaton(0, null);
     		LinkedList<State> new_states_list = new LinkedList<State>();
 			if(several_entries(a)) {
 				LinkedList<State> entries_list = new LinkedList<State>();
@@ -103,9 +102,9 @@ public class Automaton {
 					new_entries_list.add(new_entrie);
 				}
 			}
+	    	return a_det;
     	}
     	
-    	return a_det;
     }
     
     
