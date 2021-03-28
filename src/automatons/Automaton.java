@@ -69,7 +69,7 @@ public class Automaton {
     
     public boolean several_tr(Automaton a) {
     	for(int i = 0; i < (a.states).size() ; i++) {  //size() = méthode dans java.util qui donne la taille d'une LC
-    		if((((a.states).get(i)).getNeighbours()).size() > s_alph) {
+    		if((((a.states).get(i)).getNeigh_list()).size() > s_alph) {
     			/*Si la liste des voisins est > à la taille de l'alphabet on a forcément plusieurs transitions pour un
     			 * caractère donné à partir du i eme état -> l'automate est donc no  déterministe
     			 * 
