@@ -59,7 +59,7 @@ public class Automaton {
     public boolean several_entries(Automaton a) {
     	int entries_cpt = 0;   //A ce stade l'automate a zero entrée
     	for(int i = 0; i < (a.states).size() ; i++) {
-    		if((a.states).get(i).isInit()) { // on compte les entrées
+    		if(a.states.get(i).isInit()) { // on compte les entrées
     			entries_cpt++;
     		}
     		if(entries_cpt > 1) return false;  // entries est supérieur à 1 ? Si oui true sinon false
@@ -68,8 +68,8 @@ public class Automaton {
     }
     
     public boolean several_tr(Automaton a) {
-    	for(int i = 0; i < (a.states).size() ; i++) {  //size() = méthode dans java.util qui donne la taille d'une LC
-    		if((((a.states).get(i)).getNeigh_list()).size() > s_alph) {
+    	for(int i = 0; i < a.states.size() ; i++) {  //size() = méthode dans java.util qui donne la taille d'une LC
+    		if(a.states.get(i).getNeigh_list().size() > s_alph) {
     			/*Si la liste des voisins est > à la taille de l'alphabet on a forcément plusieurs transitions pour un
     			 * caractère donné à partir du i eme état -> l'automate est donc no  déterministe
     			 * 
@@ -90,8 +90,8 @@ public class Automaton {
     		LinkedList<State> new_states_list = new LinkedList<State>();
 			if(several_entries(a)) {
 				LinkedList<State> entries_list = new LinkedList<State>();
-				for(int i = 0; i < (a.states).size() ; i++) {
-					if((a.states).get(i).isInit()) {
+				for(int i = 0; i < a.states.size() ; i++) {
+					if(a.states.get(i).isInit()) {
 						entries_list.add(states.get(i));  // on récupère la liste des entrées
 					}
 				}
