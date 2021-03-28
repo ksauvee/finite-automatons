@@ -22,11 +22,11 @@ public class Neighbour {
 		this.number = number;
 	}
 	
-	public void concat(Neighbour a, Neighbour b) {
-		
+	public void reduce_neigh() {
+		String new_number = "";
 	}
 	
-	public void reduce() {
+	public void ordonate_neigh () {
 		
 	}
 }

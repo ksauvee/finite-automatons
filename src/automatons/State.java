@@ -51,6 +51,33 @@ public class State {
 	public void setNeigh_list(LinkedList<Neighbour> neigh_list) {
 		this.neigh_list = neigh_list;
 	}
+	
+	public int contains_letter(String l) {
+		for(int i=0; i < neigh_list.size(); i++) {
+			if(neigh_list.get(i).letter == l) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public void reduce_list() {
+		State new_state = new State(null, false, false, null);
+		for(int i=0; i < neigh_list.size(); i++) {
+			int place = new_state.contains_letter(neigh_list.get(i).getLetter());
+			if(place >= 0) {
+				new_state.neigh_list.get(place).number = "" + new_state.neigh_list.get(place).number + this.neigh_list.get(i).getNumber();
+			}else {
+				new_state.neigh_list.add(this.neigh_list.get(i));
+			}
+		}
+		this.neigh_list = new_state.neigh_list;
+		
+	}
+	
+	public void ordonate_list() {
+		
+	}
 
 
 
@@ -59,13 +86,7 @@ public class State {
 		for(int i = 0 ; i < a.getNeigh_list().size() ; i++) {  //Pour chaque voisin dans A
 			for(int j = 0 ; j < b.getNeigh_list().size();j++) {  //Pour chaque voisin dans B
 				if(a.getNeigh_list().get(i).getLetter() == b.getNeigh_list().get(j).getLetter()) { // Si la lettre est la même pour les deux états
-					Neighbour new_neigh = new Neighbour("", ""); // on crée le nouveau voisin à ajouter
-					new_neigh.concat(a.getNeigh_list().get(i), b.getNeigh_list().get(j));
-					
-					
-					
-					
-					
+					Neighbour new_neigh = new Neighbour(a.getNeigh_list().get(i).getLetter(),a.getNeigh_list().get(i).getNumber()+b.getNeigh_list().get(j).getLetter()); // on crée le nouveau voisin à ajouter
 					
 					/*if(a.getNeigh_list().get(i).getNumber() == b.getNeigh_list().get(j).getNumber()) {  // si le nombre est le même pour les deux états
 						new_neigh.setLetter(a.getNeigh_list().get(i).getLetter());  // Le nouveau voisin aura la lettre et les chiffres de A (ou B c'est pareil)
@@ -93,6 +114,7 @@ public class State {
 		this.isInit = a.isInit||b.isInit;
 		this.isExit = a.isExit||b.isExit;
 		this.neigh_list = new_neigh_list;
+		this.reduce_list();
 	}
 	
 }
