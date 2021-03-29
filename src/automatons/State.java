@@ -1,21 +1,25 @@
 package automatons;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Arrays;
 public class State {
     private String id;
     private boolean isInit;
     private boolean isExit;
-    private LinkedList<Neighbour> neigh_list; //ListA = [["a","0"] , ["b", "1"] String[]  neigh = ["a","0"]  String neigh = "a0"
-    											//ListB = [["a","2"]]  ListAB = [["a", String "02"]] 
+    private HashMap<String, LinkedList<String>> neighbours;
+
+    public State(final String id) {
+    	this.id = id;
+    	this.isInit = false;
+    	this.isExit = false;
+	}
     
-    
-	public State(String id, boolean isInit, boolean isExit, LinkedList<Neighbour> neigh_list) {
-		super();
+	public State(final String id, final boolean isInit, final boolean isExit, final HashMap<String, LinkedList<String>> neighbours) {
 		this.id = id;
 		this.isInit = isInit;
 		this.isExit = isExit;
-		this.neigh_list = neigh_list;
+		this.neighbours = neighbours;
 	}
 
 	public String getId() {
@@ -42,16 +46,14 @@ public class State {
 		this.isExit = isExit;
 	}
 
-	public LinkedList<Neighbour> getNeigh_list() {
-		return neigh_list;
+	public HashMap<String, LinkedList<String>> getNeighbours() {
+		return new HashMap<>(neighbours);
 	}
 
-
-
-	public void setNeigh_list(LinkedList<Neighbour> neigh_list) {
-		this.neigh_list = neigh_list;
+	public void setNeighbours(HashMap<String, LinkedList<String>> neighbours) {
+		this.neighbours = neighbours;
 	}
-	
+	/*
 	public int contains_letter(String l) {
 		for(int i=0; i < neigh_list.size(); i++) {
 			if(neigh_list.get(i).letter == l) {
@@ -98,7 +100,7 @@ public class State {
 						}
 					}else { // Si les lettres sont les mêmes mais pas les chiffres
 						
-					}*/
+					}
 				}else {
 					if(!new_neigh_list.contains(a.getNeigh_list().get(i))){ //Si le voisin de A n'est pas dans la liste on l'ajoute dans la liste
 						new_neigh_list.add(a.getNeigh_list().get(i));
@@ -116,5 +118,5 @@ public class State {
 		this.neigh_list = new_neigh_list;
 		this.reduce_list();
 	}
-	
+	*/
 }

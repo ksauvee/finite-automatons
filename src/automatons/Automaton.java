@@ -3,7 +3,7 @@ package automatons;
 import java.util.LinkedList;
 
 public class Automaton {
-    //private int nbStates; a.states.size() renvoie la taille de la liste d'états directement
+    //private int nbStates; a.states.size() renvoie la taille de la liste d'ï¿½tats directement
     private LinkedList<State> states;
     public static int s_alph; // [1;26] et si mot vide [1;27]
     
@@ -38,44 +38,44 @@ public class Automaton {
 	public static void setS_alph(int s_alph) {
 		Automaton.s_alph = s_alph;
 	}
-    
+    /*
     public boolean is_determinist(Automaton a) {
 		
     	if(several_entries(a) && several_tr(a)) {
-    		System.out.println("L'automate n'est pas déterministe car il a plusieurs entrées "
-    				+ "et plusieurs transitions libellées par le même caractère");
+    		System.out.println("L'automate n'est pas dï¿½terministe car il a plusieurs entrï¿½es "
+    				+ "et plusieurs transitions libellï¿½es par le mï¿½me caractï¿½re");
     		return false;
     	}else if(several_entries(a)) {
-    		System.out.println("L'automate n'est pas déterministe car il a plusieurs entrées");
+    		System.out.println("L'automate n'est pas dï¿½terministe car il a plusieurs entrï¿½es");
     		return false;
     	}else if(several_tr(a)) {
-    		System.out.println("L'automate n'est pas déterministe car il a "
-    				+ "plusieurs transitions libellées par le même caractère");
+    		System.out.println("L'automate n'est pas dï¿½terministe car il a "
+    				+ "plusieurs transitions libellï¿½es par le mï¿½me caractï¿½re");
     		return false;
     	}
     	return true;
     }
     
     public boolean several_entries(Automaton a) {
-    	int entries_cpt = 0;   //A ce stade l'automate a zero entrée
+    	int entries_cpt = 0;   //A ce stade l'automate a zero entrï¿½e
     	for(int i = 0; i < (a.states).size() ; i++) {
-    		if(a.states.get(i).isInit()) { // on compte les entrées
+    		if(a.states.get(i).isInit()) { // on compte les entrï¿½es
     			entries_cpt++;
     		}
-    		if(entries_cpt > 1) return false;  // entries est supérieur à 1 ? Si oui true sinon false
+    		if(entries_cpt > 1) return false;  // entries est supï¿½rieur ï¿½ 1 ? Si oui true sinon false
     	}
     	return true;
     }
-    
+
     public boolean several_tr(Automaton a) {
-    	for(int i = 0; i < a.states.size() ; i++) {  //size() = méthode dans java.util qui donne la taille d'une LC
+    	for(int i = 0; i < a.states.size() ; i++) {  //size() = mï¿½thode dans java.util qui donne la taille d'une LC
     		if(a.states.get(i).getNeigh_list().size() > s_alph) {
-    			/*Si la liste des voisins est > à la taille de l'alphabet on a forcément plusieurs transitions pour un
-    			 * caractère donné à partir du i eme état -> l'automate est donc no  déterministe
+    			/*Si la liste des voisins est > ï¿½ la taille de l'alphabet on a forcï¿½ment plusieurs transitions pour un
+    			 * caractï¿½re donnï¿½ ï¿½ partir du i eme ï¿½tat -> l'automate est donc no  dï¿½terministe
     			 * 
     			 * idem get(i) donne le i eme element de la LC
-    			 * ni copie ni affectation juste on regarde la liste -> pas de modification -> pas besoin de copie sécur
-    			 */
+    			 * ni copie ni affectation juste on regarde la liste -> pas de modification -> pas besoin de copie sï¿½cur
+
     			return true;
     		}
     	}
@@ -83,7 +83,7 @@ public class Automaton {
     }
 
 	public Automaton det_sync(Automaton a){
-    	if(is_determinist(a)) { //si l'automate est déjà déterministe
+    	if(is_determinist(a)) { //si l'automate est dï¿½jï¿½ dï¿½terministe
     		return a;
     	}else {
     		Automaton a_det = new Automaton(0, null);
@@ -92,7 +92,7 @@ public class Automaton {
 				LinkedList<State> entries_list = new LinkedList<State>();
 				for(int i = 0; i < a.states.size() ; i++) {
 					if(a.states.get(i).isInit()) {
-						entries_list.add(states.get(i));  // on récupère la liste des entrées
+						entries_list.add(states.get(i));  // on rï¿½cupï¿½re la liste des entrï¿½es
 					}
 				}
 				LinkedList<State> new_entries_list = (LinkedList<State>) entries_list.clone();
@@ -109,5 +109,5 @@ public class Automaton {
     
     
     
-    
+    */
 }
