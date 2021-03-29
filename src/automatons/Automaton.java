@@ -1,5 +1,6 @@
 package automatons;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class Automaton {
@@ -38,50 +39,44 @@ public class Automaton {
 	public static void setS_alph(int s_alph) {
 		Automaton.s_alph = s_alph;
 	}
-    /*
-    public boolean is_determinist(Automaton a) {
-		
-    	if(several_entries(a) && several_tr(a)) {
-    		System.out.println("L'automate n'est pas d�terministe car il a plusieurs entr�es "
-    				+ "et plusieurs transitions libell�es par le m�me caract�re");
-    		return false;
-    	}else if(several_entries(a)) {
-    		System.out.println("L'automate n'est pas d�terministe car il a plusieurs entr�es");
-    		return false;
-    	}else if(several_tr(a)) {
-    		System.out.println("L'automate n'est pas d�terministe car il a "
-    				+ "plusieurs transitions libell�es par le m�me caract�re");
+
+    public boolean isDeterminist() {
+    	if (several_entries() || several_transitions()) {
+    		System.out.println("L'automate n'est pas deterministe");
     		return false;
     	}
+    	System.out.println("L'automate est deterministe");
     	return true;
     }
     
-    public boolean several_entries(Automaton a) {
-    	int entries_cpt = 0;   //A ce stade l'automate a zero entr�e
-    	for(int i = 0; i < (a.states).size() ; i++) {
-    		if(a.states.get(i).isInit()) { // on compte les entr�es
-    			entries_cpt++;
+    public boolean several_entries() {
+    	int nbEntries = 0;
+    	for (State state : states) {
+    		if (state.isInit()) {
+    			++nbEntries;
     		}
-    		if(entries_cpt > 1) return false;  // entries est sup�rieur � 1 ? Si oui true sinon false
+
+    		if (nbEntries > 1) {
+    			return true;
+			}
     	}
     	return true;
     }
 
-    public boolean several_tr(Automaton a) {
-    	for(int i = 0; i < a.states.size() ; i++) {  //size() = m�thode dans java.util qui donne la taille d'une LC
-    		if(a.states.get(i).getNeigh_list().size() > s_alph) {
-    			/*Si la liste des voisins est > � la taille de l'alphabet on a forc�ment plusieurs transitions pour un
-    			 * caract�re donn� � partir du i eme �tat -> l'automate est donc no  d�terministe
-    			 * 
-    			 * idem get(i) donne le i eme element de la LC
-    			 * ni copie ni affectation juste on regarde la liste -> pas de modification -> pas besoin de copie s�cur
+    public boolean several_transitions() {
+    	for (State state : states) {
+			HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
+    		for (String letter : neighbours.keySet()) {
+    			if (neighbours.get(letter).size() > 1) {
+    				return true;
+				}
+			}
+		}
 
-    			return true;
-    		}
-    	}
-		return false;
+    	return false;
     }
 
+    /*
 	public Automaton det_sync(Automaton a){
     	if(is_determinist(a)) { //si l'automate est d�j� d�terministe
     		return a;
