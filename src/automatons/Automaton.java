@@ -12,7 +12,7 @@ public class Automaton {
     private int nbExitStates;
     private int nbTransitions;
     private final LinkedList<State> states;
-
+    
     public Automaton(final LinkedList<String> automatonCharacteristics) {
         // automatons characteristics are stored in String so we convert to Integer to initialize attributes
         nbAlphabetSymbols = Integer.parseInt(automatonCharacteristics.get(0));
@@ -72,5 +72,18 @@ public class Automaton {
         }
 
         return automatonInformations;
+    }
+    
+    public static void main (String[] args) {
+    	
+    }
+    
+    public boolean isComplete() {
+    	for(int i = 0; i < this.nbStates; ++i) {
+    		if(!this.states.get(i).haveAllTransitions(this.nbAlphabetSymbols)) {
+    			return false;
+    		}
+    	}
+    	return true;
     }
 }
