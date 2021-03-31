@@ -86,4 +86,17 @@ public class Automaton {
     	}
     	return true;
     }
+    public void complete() {
+    	if(!this.isComplete()) {
+            State poubelle = new State("P");
+    		for(int i = 0; i < this.nbStates; ++i) {
+    			poubelle.addNeighbour(Character.toString((char)(97+i)), "P");
+    		}
+    		for(int i = 0; i < this.nbStates; ++i) {
+        		if(!this.states.get(i).haveAllTransitions(this.nbAlphabetSymbols)) {
+        			this.states.get(i).completeTransition(this.nbAlphabetSymbols);
+        		}
+        	}
+    	}
+    }
 }
