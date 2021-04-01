@@ -11,8 +11,8 @@ public class Automaton {
     private int nbInitStates;
     private int nbExitStates;
     private int nbTransitions;
-    private final LinkedList<State> states;
-    
+    private LinkedList<State> states;
+
     public Automaton(final LinkedList<String> automatonCharacteristics) {
         // automatons characteristics are stored in String so we convert to Integer to initialize attributes
         nbAlphabetSymbols = Integer.parseInt(automatonCharacteristics.get(0));
@@ -84,7 +84,17 @@ public class Automaton {
     }
 
     public LinkedList<State> getStates() {
-        return new LinkedList<>(states);
+        LinkedList<State> newStates = new LinkedList<>();
+
+        for (State state : states) {
+            newStates.add(new State(state));
+        }
+
+        return newStates;
+    }
+
+    public void setStates(LinkedList<State> states) {
+        this.states = new LinkedList<>(states);
     }
 
     public static LinkedList<String> readAutomatonOnFile(final String filename) {
@@ -105,5 +115,18 @@ public class Automaton {
         }
 
         return automatonInformations;
+    }
+
+    public Automaton automatonComplementarization() {
+        Automaton complementaryAutomaton = new Automaton(this);
+        LinkedList<State> states = complementaryAutomaton.getStates();
+
+        for (State state : states) {
+            state.setIsExit(!state.getIsExit());
+        }
+
+        complementaryAutomaton.setStates(states);
+
+        return complementaryAutomaton;
     }
 }
