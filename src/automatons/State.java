@@ -3,6 +3,7 @@ package automatons;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+
 public class State {
     private final String id;
     private boolean isInit;
