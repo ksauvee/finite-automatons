@@ -1,1 +1,1 @@
-# math-info-finite-automatons
+# finite-automatons
