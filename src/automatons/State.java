@@ -15,6 +15,36 @@ public class State {
         neighbours = new HashMap<>();
     }
 
+    public State(State state) {
+        this.id = state.getId();
+        this.isInit = state.getIsInit();
+        this.isExit = state.getIsExit();
+        this.neighbours = state.getNeighbours();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public boolean getIsInit() {
+        return isInit;
+    }
+
+    public boolean getIsExit() {
+        return isExit;
+    }
+
+    public HashMap<String, LinkedList<String>> getNeighbours() {
+        HashMap<String, LinkedList<String>> newNeighbours = new HashMap<>();
+
+        for (String transition : neighbours.keySet()) {
+            LinkedList<String> newStateNeighbours = new LinkedList<>(neighbours.get(transition));
+            newNeighbours.put(transition, newStateNeighbours);
+        }
+
+        return newNeighbours;
+    }
+
     public void setIsInit(final boolean isInit) {
         this.isInit = isInit;
     }
