@@ -97,6 +97,10 @@ public class Automaton {
         this.states = new LinkedList<>(states);
     }
 
+    public void addState(State state) {
+        states.add(state);
+    }
+
     public static LinkedList<String> readAutomatonOnFile(final String filename) {
         LinkedList<String> automatonInformations = new LinkedList<>();
         try {
