@@ -9,9 +9,9 @@ import java.io.FileNotFoundException;
 public class Automaton {
     private final int nbAlphabetSymbols;
     private int nbStates;
-    private final int nbInitStates;
-    private final int nbExitStates;
-    private final int nbTransitions;
+    private int nbInitStates;
+    private int nbExitStates;
+    private int nbTransitions;
     private LinkedList<State> states;
 
     public Automaton(final LinkedList<String> automatonCharacteristics) {
@@ -59,7 +59,7 @@ public class Automaton {
         this.nbAlphabetSymbols = automaton.getNbAlphabetSymbols();
         this.nbStates = automaton.getNbStates();
         this.nbInitStates = automaton.getNbInitStates();
-        this.nbExitStates = automaton.getNbStates();
+        this.nbExitStates = automaton.getNbExitStates();
         this.nbTransitions = automaton.getNbTransitions();
         this.states = automaton.getStates();
     }
@@ -82,8 +82,26 @@ public class Automaton {
         return nbInitStates;
     }
 
+    public void setNbTransitions(final int nbTransitions) {
+        if (nbTransitions >= 0) {
+            this.nbTransitions = nbTransitions;
+        }
+    }
+
+    public void setNbInitStates(final int nbInitStates) {
+        if (nbInitStates >= 0) {
+            this.nbInitStates = nbInitStates;
+        }
+    }
+
     public int getNbExitStates() {
         return nbExitStates;
+    }
+
+    public void setNbExitStates(final int nbExitStates) {
+        if (nbExitStates >= 0) {
+            this.nbExitStates = nbExitStates;
+        }
     }
 
     public int getNbTransitions() {
@@ -153,6 +171,7 @@ public class Automaton {
         for (State currentState : states) {
             // we add the transitions of the old entries to the new entry
             if (currentState.getIsInit()) {
+                currentState.setIsInit(!currentState.getIsInit());
                 HashMap<String, LinkedList<String>> newEntryNeighbours = newEntry.getNeighbours();
 
                 // we get the transitions of the old entry
@@ -165,10 +184,13 @@ public class Automaton {
                 // if one entry is also an exit then the new entry becomes an exit
                 if (currentState.getIsExit()) {
                     newEntry.setIsExit(true);
+                    standardizedAutomaton.setNbExitStates(standardizedAutomaton.getNbExitStates()+1);
                 }
             }
         }
 
+        standardizedAutomaton.setNbInitStates(1);
+        standardizedAutomaton.setStates(states);
         standardizedAutomaton.addState(newEntry);
 
         return standardizedAutomaton;
