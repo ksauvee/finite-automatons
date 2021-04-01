@@ -1,16 +1,17 @@
 package automatons;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class State {
     private final String id;
     private boolean isInit;
     private boolean isExit;
-    private final LinkedList<String[]> neighbours;
+    private final HashMap<String, LinkedList<String>> neighbours;
 
     public State(String id) {
         this.id = id;
-        neighbours = new LinkedList<>();
+        neighbours = new HashMap<>();
     }
 
     public void setIsInit(final boolean isInit) {
@@ -22,11 +23,14 @@ public class State {
     }
 
     public void addNeighbour(final String letter, final String arrivalState) {
-        String[] transition = new String[2];
+        LinkedList<String> letterTransitions = neighbours.get(letter);
 
-        transition[0] = letter;
-        transition[1] = arrivalState;
-
-        neighbours.add(transition);
+        if (letterTransitions == null) {
+            LinkedList<String> newTransition = new LinkedList<>();
+            newTransition.add(arrivalState);
+            neighbours.put(letter, newTransition);
+        } else {
+            letterTransitions.add(arrivalState);
+        }
     }
 }
