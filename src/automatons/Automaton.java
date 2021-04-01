@@ -54,6 +54,30 @@ public class Automaton {
         }
     }
 
+    public int getNbAlphabetSymbols() {
+        return nbAlphabetSymbols;
+    }
+
+    public int getNbStates() {
+        return nbStates;
+    }
+
+    public int getNbInitStates() {
+        return nbInitStates;
+    }
+
+    public int getNbExitStates() {
+        return nbExitStates;
+    }
+
+    public int getNbTransitions() {
+        return nbTransitions;
+    }
+
+    public LinkedList<State> getStates() {
+        return new LinkedList<>(states);
+    }
+
     public static LinkedList<String> readAutomatonOnFile(final String filename) {
         LinkedList<String> automatonInformations = new LinkedList<>();
         try {
