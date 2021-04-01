@@ -54,6 +54,15 @@ public class Automaton {
         }
     }
 
+    public Automaton(Automaton automaton) {
+        this.nbAlphabetSymbols = automaton.getNbAlphabetSymbols();
+        this.nbStates = automaton.getNbStates();
+        this.nbInitStates = automaton.getNbInitStates();
+        this.nbExitStates = automaton.getNbStates();
+        this.nbTransitions = automaton.getNbTransitions();
+        this.states = automaton.getStates();
+    }
+
     public int getNbAlphabetSymbols() {
         return nbAlphabetSymbols;
     }
