@@ -35,7 +35,14 @@ public class State {
     }
 
     public HashMap<String, LinkedList<String>> getNeighbours() {
-        return new HashMap<>(neighbours);
+        HashMap<String, LinkedList<String>> newNeighbours = new HashMap<>();
+
+        for (String transition : neighbours.keySet()) {
+            LinkedList<String> newStateNeighbours = new LinkedList<>(neighbours.get(transition));
+            newNeighbours.put(transition, newStateNeighbours);
+        }
+
+        return newNeighbours;
     }
 
     public void setIsInit(final boolean isInit) {
