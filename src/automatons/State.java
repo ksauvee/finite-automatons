@@ -8,10 +8,16 @@ public class State {
     private final String id;
     private boolean isInit;
     private boolean isExit;
-    private final HashMap<String, LinkedList<String>> neighbours;
+    private HashMap<String, LinkedList<String>> neighbours;
 
     public State(String id) {
         this.id = id;
+        neighbours = new HashMap<>();
+    }
+
+    public State(String id, final boolean isInit) {
+        this.id = id;
+        this.isInit = isInit;
         neighbours = new HashMap<>();
     }
 
@@ -43,6 +49,10 @@ public class State {
         }
 
         return newNeighbours;
+    }
+
+    public void setNeighbours(HashMap<String, LinkedList<String>> neighbours) {
+        this.neighbours = new HashMap<>(neighbours);
     }
 
     public void setIsInit(final boolean isInit) {

@@ -1,5 +1,6 @@
 package automatons;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.io.File;
@@ -8,9 +9,9 @@ import java.io.FileNotFoundException;
 public class Automaton {
     private final int nbAlphabetSymbols;
     private int nbStates;
-    private int nbInitStates;
-    private int nbExitStates;
-    private int nbTransitions;
+    private final int nbInitStates;
+    private final int nbExitStates;
+    private final int nbTransitions;
     private LinkedList<State> states;
 
     public Automaton(final LinkedList<String> automatonCharacteristics) {
@@ -71,6 +72,12 @@ public class Automaton {
         return nbStates;
     }
 
+    public void setNbStates(final int nbStates) {
+        if (nbStates >= 0) {
+            this.nbStates = nbStates;
+        }
+    }
+
     public int getNbInitStates() {
         return nbInitStates;
     }
@@ -93,7 +100,7 @@ public class Automaton {
         return newStates;
     }
 
-    public void setStates(LinkedList<State> states) {
+    public void setStates(final LinkedList<State> states) {
         this.states = new LinkedList<>(states);
     }
 
@@ -132,5 +139,38 @@ public class Automaton {
         complementaryAutomaton.setStates(states);
 
         return complementaryAutomaton;
+    }
+
+    public Automaton standardizedAutomaton() {
+        Automaton standardizedAutomaton = new Automaton(this);
+
+        // we create the new entry
+        State newEntry = new State("i", true);
+        standardizedAutomaton.setNbStates(standardizedAutomaton.getNbStates()+1);
+
+
+        LinkedList<State> states = standardizedAutomaton.getStates();
+        for (State currentState : states) {
+            // we add the transitions of the old entries to the new entry
+            if (currentState.getIsInit()) {
+                HashMap<String, LinkedList<String>> newEntryNeighbours = newEntry.getNeighbours();
+
+                // we get the transitions of the old entry
+                HashMap<String, LinkedList<String>> currentStateNeighbours = currentState.getNeighbours();
+
+                // and put them onto the the new entry's neighbours
+                newEntryNeighbours.putAll(currentStateNeighbours);
+                newEntry.setNeighbours(newEntryNeighbours);
+
+                // if one entry is also an exit then the new entry becomes an exit
+                if (currentState.getIsExit()) {
+                    newEntry.setIsExit(true);
+                }
+            }
+        }
+
+        standardizedAutomaton.addState(newEntry);
+
+        return standardizedAutomaton;
     }
 }
