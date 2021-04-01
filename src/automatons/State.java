@@ -15,6 +15,13 @@ public class State {
         neighbours = new HashMap<>();
     }
 
+    public State(State state) {
+        this.id = state.getId();
+        this.isInit = state.getIsInit();
+        this.isExit = state.getIsExit();
+        this.neighbours = state.getNeighbours();
+    }
+
     public String getId() {
         return id;
     }
@@ -25,6 +32,10 @@ public class State {
 
     public boolean getIsExit() {
         return isExit;
+    }
+
+    public HashMap<String, LinkedList<String>> getNeighbours() {
+        return new HashMap<>(neighbours);
     }
 
     public void setIsInit(final boolean isInit) {
