@@ -15,6 +15,18 @@ public class State {
         neighbours = new HashMap<>();
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public boolean getIsInit() {
+        return isInit;
+    }
+
+    public boolean getIsExit() {
+        return isExit;
+    }
+
     public void setIsInit(final boolean isInit) {
         this.isInit = isInit;
     }
