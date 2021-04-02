@@ -48,10 +48,10 @@ public class Automaton {
 
         for (int i = 0; i < nbTransitions; ++i) {
             String initialState = String.valueOf(automatonCharacteristics.get(5+i).charAt(0));
-            String letter = String.valueOf(automatonCharacteristics.get(5+i).charAt(1));
+            String symbol = String.valueOf(automatonCharacteristics.get(5+i).charAt(1));
             String arrivalState = String.valueOf(automatonCharacteristics.get(5+i).charAt(2));
 
-            states.get(Integer.parseInt(initialState)).addNeighbour(letter, arrivalState);
+            states.get(Integer.parseInt(initialState)).addNeighbour(symbol, arrivalState);
         }
     }
 
@@ -159,6 +159,21 @@ public class Automaton {
         return complementaryAutomaton;
     }
 
+    public int findNbTransitionsAutomaton() {
+        int nbTransitions = 0;
+
+        for (State state : getStates()) {
+            // automaton's nbTransitions is the sum of the transitions of all states with all symbols
+            HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
+
+            for (String symbols : neighbours.keySet()) {
+                nbTransitions += neighbours.get(symbols).size();
+            }
+        }
+
+        return nbTransitions;
+    }
+
     public Automaton standardizedAutomaton() {
         Automaton standardizedAutomaton = new Automaton(this);
 
@@ -177,9 +192,9 @@ public class Automaton {
                 HashMap<String, LinkedList<String>> currentStateNeighbours = currentState.getNeighbours();
 
                 // we merge the transitions between the old entries and the new entry
-                for (String letter : currentStateNeighbours.keySet()) {
-                    for (String arrivalState : currentStateNeighbours.get(letter)) {
-                        newEntry.addNeighbour(letter, arrivalState);
+                for (String symbol : currentStateNeighbours.keySet()) {
+                    for (String arrivalState : currentStateNeighbours.get(symbol)) {
+                        newEntry.addNeighbour(symbol, arrivalState);
                     }
                 }
 
@@ -191,9 +206,11 @@ public class Automaton {
             }
         }
 
+        // modification the standardized automaton characteristics
         standardizedAutomaton.setNbInitStates(1);
         standardizedAutomaton.setStates(states);
         standardizedAutomaton.addState(newEntry);
+        standardizedAutomaton.setNbTransitions(standardizedAutomaton.findNbTransitionsAutomaton());
 
         return standardizedAutomaton;
     }

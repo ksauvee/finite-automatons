@@ -63,13 +63,13 @@ public class State {
         this.isExit = isExit;
     }
 
-    public void addNeighbour(final String letter, final String arrivalState) {
-        LinkedList<String> letterTransitions = neighbours.get(letter);
+    public void addNeighbour(final String symbol, final String arrivalState) {
+        LinkedList<String> letterTransitions = neighbours.get(symbol);
 
         if (letterTransitions == null) {
             LinkedList<String> newTransition = new LinkedList<>();
             newTransition.add(arrivalState);
-            neighbours.put(letter, newTransition);
+            neighbours.put(symbol, newTransition);
         } else if (!letterTransitions.contains(arrivalState)) {
             // we check the transition doesn't exist in order to avoid duplicates
             letterTransitions.add(arrivalState);
