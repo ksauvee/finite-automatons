@@ -174,6 +174,23 @@ public class Automaton {
         return nbTransitions;
     }
 
+    public boolean isStandardized() {
+        for (State currentState : states) {
+            if (currentState.getIsInit()) {
+                for (String symbol : currentState.getNeighbours().keySet()) {
+                    // we check is there a transition to currentState
+                    for (String arrivalState : currentState.getNeighbours().get(symbol)) {
+                        if (arrivalState.equals(currentState.getId())) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
     public Automaton standardizedAutomaton() {
         Automaton standardizedAutomaton = new Automaton(this);
 
