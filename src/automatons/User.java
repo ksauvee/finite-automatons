@@ -2,12 +2,14 @@ package automatons;
 
 public class User {
     private String word;
-    private String idInit;
-    private String idCurrentState;
-    private Automaton automatonTested;
+    private final String idInit;
+    private final String idCurrentState;
+    private final Automaton automatonTested;
 
-    public User(String idInit, Automaton automatonTested) {
-
+    public User(final String idInit, final Automaton automatonTested) {
+        this.idInit = idInit;
+        this.idCurrentState = idInit;
+        this.automatonTested = automatonTested;
     }
 
     public void readWord() {
