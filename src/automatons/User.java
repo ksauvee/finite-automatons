@@ -1,5 +1,7 @@
 package automatons;
 
+import java.util.Scanner;
+
 public class User {
     private String word;
     private final String idInit;
@@ -13,7 +15,9 @@ public class User {
     }
 
     public void readWord() {
-
+        Scanner in = new Scanner(System.in);
+        System.out.println("Enter word : (\"end\" stop the process of word recognition)");
+        word = in.nextLine();
     }
 
     public void isWordRecognizable() {
