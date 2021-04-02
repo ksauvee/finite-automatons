@@ -1,19 +1,27 @@
 package automatons;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Automaton {
     //private int nbStates; a.states.size() renvoie la taille de la liste d'�tats directement
     private LinkedList<State> states;
-    public static int s_alph; // [1;26] et si mot vide [1;27]
+    protected final boolean SYNC;
+    protected final int S_ALPH; // [1;26] et si mot vide [1;27]
+    public final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
+    protected static List<String> aut_alph;
     
     //Vous me suivez ? Vous confirmez ?
     
-    public Automaton(int nbStates, LinkedList<State> states) {
+    public Automaton(int nbStates, LinkedList<State> states, boolean sync, int s_alph) {
 		super();
 		//this.nbStates = nbStates;
 		this.states = states;
+		this.SYNC = sync;
+		this.S_ALPH = s_alph;
+		aut_alph=alphabet.subList(0, s_alph);
 	}
 
 	/*public int getNbStates() {
@@ -30,14 +38,6 @@ public class Automaton {
 
 	public void setStates(LinkedList<State> states) {
 		this.states = states;
-	}
-
-	public static int getS_alph() {
-		return s_alph;
-	}
-
-	public static void setS_alph(int s_alph) {
-		Automaton.s_alph = s_alph;
 	}
 
     public boolean isDeterminist() {
