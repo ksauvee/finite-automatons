@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class User {
     private String word;
-    private String idInit;
+    private final String idInit;
     private String idCurrentState;
     private final Automaton automatonTested;
 
@@ -22,7 +22,7 @@ public class User {
         word = in.nextLine();
     }
 
-    public boolean isWordRecognizable() {
+    public void isWordRecognizable() {
         int i = 0;
         idCurrentState = idInit;
 
@@ -33,7 +33,8 @@ public class User {
 
             // check case no possible transition
             if (!currentStateNeighbours.containsKey(String.valueOf(character))) {
-                return false;
+                System.out.println("Word not recognized. No \"" + character + "\" transition.");
+                return;
             }
 
             // get the next state
@@ -41,6 +42,20 @@ public class User {
             ++i;
         }
 
-        return automatonTested.getStates().get(Integer.parseInt(idCurrentState)).getIsExit();
+        if (automatonTested.getStates().get(Integer.parseInt(idCurrentState)).getIsExit()) {
+            System.out.println("Word recognized.");
+        } else {
+            System.out.println("Word not recognized.");
+        }
+    }
+
+    public void testWordSequence() {
+        readWord();
+
+        // "end" word is the key word to stop the process
+        while (!word.equals("end")) {
+            isWordRecognizable();
+            readWord();
+        }
     }
 }
