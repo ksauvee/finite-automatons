@@ -31,7 +31,7 @@ public class Automaton {
         String[] initStates = automatonCharacteristics.get(2).split("\\s");
         nbInitStates = Integer.parseInt(initStates[0]);
 
-        for (int i = 0; i < nbInitStates + 1; ++i) {
+        for (int i = 1; i < nbInitStates + 1; ++i) {
             String stateId = initStates[i];
             states.get(Integer.parseInt(stateId)).setIsInit(true);
         }
