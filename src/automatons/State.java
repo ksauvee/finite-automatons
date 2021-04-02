@@ -66,31 +66,51 @@ public class State {
 				if(a.neighbours.containsKey(letter) && b.neighbours.containsKey(letter)){
 					a.neighbours.get(letter).addAll(b.neighbours.get(letter)); // on modifie la liste de base !?
 					this.neighbours.put(letter, a.neighbours.get(letter));
+					this.simplification(letter);
 				}else if(a.neighbours.containsKey(letter)) {
 					this.neighbours.put(letter, a.neighbours.get(letter));
+					this.simplification(letter);
 				}else if(b.neighbours.containsKey(letter)) {
 					this.neighbours.put(letter, b.neighbours.get(letter));
+					this.simplification(letter);
 				}
-				// on a un dictionnaire avec les lettres libellant toutes les transitions du nouvel état
-				// Cependant on a des doublons on veut donc les supprimer
-				
-				LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<String>(this.neighbours.get(letter)); //on crée une nouvelle liste de type hset qui en supporte pas les doublons
-				this.neighbours.get(letter).clear(); // on clear la liste de nos voisins
-				this.neighbours.get(letter).addAll(hSetNeighbours); // on ajoute maintenant les éléments dans la liste principale
-				Collections.sort(this.neighbours.get(letter)); // on ordonne la liste
-				String newStateNeighbour ="";
-				for(String number : this.neighbours.get(letter)) {
-					newStateNeighbour.concat(number);
-				}
-				this.neighbours.get(letter).clear(); // on clear à nouveau la liste de nos voisins
-				this.neighbours.get(letter).add(newStateNeighbour);
-				
 			}
 		}
-		
+		this.id = a.id+b.id;
+		//faire en sorte que les id ne soient pas pareil
+		this.isInit = a.isInit||b.isInit;
+		this.isExit = a.isExit||b.isExit;
 	}
 	
+	public void simplification(String letter) {
+		// on a un dictionnaire avec les lettres libellant toutes les transitions du nouvel état
+		// Cependant on a des doublons on veut donc les supprimer
+		LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<String>(this.neighbours.get(letter)); //on crée une nouvelle liste de type hset qui en supporte pas les doublons
+		this.neighbours.get(letter).clear(); // on clear la liste de nos voisins
+		this.neighbours.get(letter).addAll(hSetNeighbours); // on ajoute maintenant les éléments dans la liste principale
+		Collections.sort(this.neighbours.get(letter)); // on ordonne la liste
+		String newStateNeighbour ="";
+		for(String number : this.neighbours.get(letter)) {
+			newStateNeighbour.concat(number);
+		}
+		this.neighbours.get(letter).clear(); // on clear à nouveau la liste de nos voisins
+		this.neighbours.get(letter).add(newStateNeighbour);
+	}
 	
+    public void removeDoublon_string() {
+        String output = new String();
+        for (int i = 0; i < this.getId().length(); i++) {
+            for (int j = 0; j < output.length(); j++) {
+                if (this.getId().charAt(i) != output.charAt(j)) {
+                    output = output + this.getId().charAt(i);
+                }
+            }
+        }
+        this.id = output;
+    }
+    
+
+
 	
 	
 	
