@@ -174,7 +174,7 @@ public class Automaton {
         return nbTransitions;
     }
 
-    public boolean isStandardized() {
+    public boolean isStandard() {
         for (State currentState : states) {
             if (currentState.getIsInit()) {
                 for (String symbol : currentState.getNeighbours().keySet()) {
@@ -191,7 +191,11 @@ public class Automaton {
         return true;
     }
 
-    public Automaton standardizedAutomaton() {
+    public Automaton automatonStandardization() {
+        if (isStandard()) {
+            System.out.println("Automaton is already standard");
+            return null;
+        }
         Automaton standardizedAutomaton = new Automaton(this);
 
         // we create the new entry
