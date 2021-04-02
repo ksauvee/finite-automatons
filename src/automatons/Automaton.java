@@ -172,14 +172,16 @@ public class Automaton {
             // we add the transitions of the old entries to the new entry
             if (currentState.getIsInit()) {
                 currentState.setIsInit(!currentState.getIsInit());
-                HashMap<String, LinkedList<String>> newEntryNeighbours = newEntry.getNeighbours();
 
                 // we get the transitions of the old entry
                 HashMap<String, LinkedList<String>> currentStateNeighbours = currentState.getNeighbours();
 
-                // and put them onto the the new entry's neighbours
-                newEntryNeighbours.putAll(currentStateNeighbours);
-                newEntry.setNeighbours(newEntryNeighbours);
+                // we merge the transitions between the old entries and the new entry
+                for (String letter : currentStateNeighbours.keySet()) {
+                    for (String arrivalState : currentStateNeighbours.get(letter)) {
+                        newEntry.addNeighbour(letter, arrivalState);
+                    }
+                }
 
                 // if one entry is also an exit then the new entry becomes an exit
                 if (currentState.getIsExit()) {

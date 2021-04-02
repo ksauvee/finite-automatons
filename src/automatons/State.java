@@ -70,7 +70,8 @@ public class State {
             LinkedList<String> newTransition = new LinkedList<>();
             newTransition.add(arrivalState);
             neighbours.put(letter, newTransition);
-        } else {
+        } else if (!letterTransitions.contains(arrivalState)) {
+            // we check the transition doesn't exist in order to avoid duplicates
             letterTransitions.add(arrivalState);
         }
     }
