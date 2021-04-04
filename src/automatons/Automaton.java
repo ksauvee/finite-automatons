@@ -55,12 +55,21 @@ public class Automaton {
     		if (state.isInit()) {
     			++nbEntries;
     		}
-
     		if (nbEntries > 1) {
     			return true;
 			}
     	}
-    	return true;
+    	return false;
+    }
+    
+    public LinkedList<State> getEntries(){
+    	LinkedList<State> entries_list = new LinkedList<State>(null);
+    	for (State state : states) {
+    		if (state.isInit()) {
+    			entries_list.add(state);
+    		}
+    	}
+    	return entries_list;
     }
 
     public boolean several_transitions() {
@@ -72,10 +81,56 @@ public class Automaton {
 				}
 			}
 		}
-
     	return false;
     }
 
+    
+    public LinkedList<State> getSeveralTrans(){
+    	LinkedList<State> several_trans_list = new LinkedList<State>(null);
+    	for (State state : states) {
+			HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
+    		for (String letter : neighbours.keySet()) {
+    			if (neighbours.get(letter).size() > 1) {
+    				several_trans_list.add(state);
+				}
+			}
+		}
+    	return several_trans_list;
+    }
+    //fonction recuperant les entrées et fonction récupérant les états rendant l'automate non déterministe
+
+    public Automaton det_sync(Automaton a) {
+		Automaton new_a = a;
+		LinkedList<State> entries_list = null;
+		LinkedList<State> new_list = null;
+		while(!new_a.isDeterminist()) {
+			if(new_a.several_entries()) {
+    			entries_list = a.getEntries();
+    			int i = 0;
+    			do {
+    				State new_state = new State(null);
+    				new_state.concat(entries_list.get(0), entries_list.get(1));
+    				entries_list.remove(0);
+    				entries_list.remove(1);
+    				entries_list.add(new_state);
+    			}while(entries_list.size()>1);
+    		}
+			if(new_a.several_transitions()) {
+				new_list = a.getSeveralTrans();
+				do {
+    				State new_state = new State(null);
+    				new_state.concat(entries_list.get(0), entries_list.get(1));
+    				entries_list.remove(0);
+    				entries_list.remove(1);
+    				entries_list.add(new_state);
+    			}while(entries_list.size()>1);
+			}
+			entries_list.clear();
+			new_list.clear();
+			
+		}
+		return new_a;
+    }
     /*
 	public Automaton det_sync(Automaton a){
     	if(is_determinist(a)) { //si l'automate est dï¿½jï¿½ dï¿½terministe
