@@ -8,10 +8,10 @@ import java.util.List;
 public class Automaton {
     //private int nbStates; a.states.size() renvoie la taille de la liste d'ï¿½tats directement
     private LinkedList<State> states;
-    protected final boolean SYNC;
-    protected final int S_ALPH; // [1;26] et si mot vide [1;27]
+    protected boolean SYNC;
+    protected static int S_ALPH; // [1;26] et si mot vide [1;27]
     public final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
-    protected static List<String> aut_alph;
+    protected static List<String> aut_alph= alphabet.subList(0, S_ALPH);
     
     //Vous me suivez ? Vous confirmez ?
     
@@ -21,7 +21,6 @@ public class Automaton {
 		this.states = states;
 		this.SYNC = sync;
 		this.S_ALPH = s_alph;
-		aut_alph=alphabet.subList(0, s_alph);
 	}
 
 	/*public int getNbStates() {
@@ -63,7 +62,7 @@ public class Automaton {
     }
     
     public LinkedList<State> getEntries(){
-    	LinkedList<State> entries_list = new LinkedList<State>(null);
+    	LinkedList<State> entries_list = new LinkedList<State>();
     	for (State state : states) {
     		if (state.isInit()) {
     			entries_list.add(state);
@@ -99,23 +98,27 @@ public class Automaton {
     }
     //fonction recuperant les entrées et fonction récupérant les états rendant l'automate non déterministe
 
-    public Automaton det_sync(Automaton a) {
+    public void det_sync(Automaton a) {
 		Automaton new_a = a;
-		LinkedList<State> entries_list = null;
-		LinkedList<State> new_list = null;
+		LinkedList<State> entries_list = new LinkedList<State>();
+		LinkedList<State> new_list = new LinkedList<State>();
 		while(!new_a.isDeterminist()) {
 			if(new_a.several_entries()) {
-    			entries_list = a.getEntries();
-    			int i = 0;
+    			entries_list.addAll(a.getEntries());
     			do {
-    				State new_state = new State(null);
-    				new_state.concat(entries_list.get(0), entries_list.get(1));
+    				State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
+    				if(entries_list.size()>1) {
+        				new_state.concat(entries_list.get(0), entries_list.get(1));
+    				}
     				entries_list.remove(0);
-    				entries_list.remove(1);
+    				if(entries_list.size()>1) {
+    					entries_list.remove(1);
+    				}
     				entries_list.add(new_state);
     			}while(entries_list.size()>1);
     		}
-			if(new_a.several_transitions()) {
+			new_list.addAll(entries_list);
+			/*if(new_a.several_transitions()) {
 				new_list = a.getSeveralTrans();
 				do {
     				State new_state = new State(null);
@@ -126,10 +129,13 @@ public class Automaton {
     			}while(entries_list.size()>1);
 			}
 			entries_list.clear();
-			new_list.clear();
+			new_list.clear();*/
 			
 		}
-		return new_a;
+		this.states = new_list;
+		this.SYNC = true;
+		this.S_ALPH = a.S_ALPH;
+		this.aut_alph = a.aut_alph;
     }
     /*
 	public Automaton det_sync(Automaton a){
