@@ -8,10 +8,16 @@ public class State {
     private final String id;
     private boolean isInit;
     private boolean isExit;
-    private final HashMap<String, LinkedList<String>> neighbours;
+    private HashMap<String, LinkedList<String>> neighbours;
 
     public State(String id) {
         this.id = id;
+        neighbours = new HashMap<>();
+    }
+
+    public State(String id, final boolean isInit) {
+        this.id = id;
+        this.isInit = isInit;
         neighbours = new HashMap<>();
     }
 
@@ -45,6 +51,10 @@ public class State {
         return newNeighbours;
     }
 
+    public void setNeighbours(HashMap<String, LinkedList<String>> neighbours) {
+        this.neighbours = new HashMap<>(neighbours);
+    }
+
     public void setIsInit(final boolean isInit) {
         this.isInit = isInit;
     }
@@ -53,14 +63,15 @@ public class State {
         this.isExit = isExit;
     }
 
-    public void addNeighbour(final String letter, final String arrivalState) {
-        LinkedList<String> letterTransitions = neighbours.get(letter);
+    public void addNeighbour(final String symbol, final String arrivalState) {
+        LinkedList<String> letterTransitions = neighbours.get(symbol);
 
         if (letterTransitions == null) {
             LinkedList<String> newTransition = new LinkedList<>();
             newTransition.add(arrivalState);
-            neighbours.put(letter, newTransition);
-        } else {
+            neighbours.put(symbol, newTransition);
+        } else if (!letterTransitions.contains(arrivalState)) {
+            // we check the transition doesn't exist in order to avoid duplicates
             letterTransitions.add(arrivalState);
         }
     }

@@ -1,5 +1,6 @@
 package automatons;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.io.File;
@@ -30,7 +31,7 @@ public class Automaton {
         String[] initStates = automatonCharacteristics.get(2).split("\\s");
         nbInitStates = Integer.parseInt(initStates[0]);
 
-        for (int i = 0; i < nbInitStates + 1; ++i) {
+        for (int i = 1; i < nbInitStates + 1; ++i) {
             String stateId = initStates[i];
             states.get(Integer.parseInt(stateId)).setIsInit(true);
         }
@@ -47,10 +48,10 @@ public class Automaton {
 
         for (int i = 0; i < nbTransitions; ++i) {
             String initialState = String.valueOf(automatonCharacteristics.get(5+i).charAt(0));
-            String letter = String.valueOf(automatonCharacteristics.get(5+i).charAt(1));
+            String symbol = String.valueOf(automatonCharacteristics.get(5+i).charAt(1));
             String arrivalState = String.valueOf(automatonCharacteristics.get(5+i).charAt(2));
 
-            states.get(Integer.parseInt(initialState)).addNeighbour(letter, arrivalState);
+            states.get(Integer.parseInt(initialState)).addNeighbour(symbol, arrivalState);
         }
     }
 
@@ -58,7 +59,7 @@ public class Automaton {
         this.nbAlphabetSymbols = automaton.getNbAlphabetSymbols();
         this.nbStates = automaton.getNbStates();
         this.nbInitStates = automaton.getNbInitStates();
-        this.nbExitStates = automaton.getNbStates();
+        this.nbExitStates = automaton.getNbExitStates();
         this.nbTransitions = automaton.getNbTransitions();
         this.states = automaton.getStates();
     }
@@ -71,12 +72,36 @@ public class Automaton {
         return nbStates;
     }
 
+    public void setNbStates(final int nbStates) {
+        if (nbStates >= 0) {
+            this.nbStates = nbStates;
+        }
+    }
+
     public int getNbInitStates() {
         return nbInitStates;
     }
 
+    public void setNbTransitions(final int nbTransitions) {
+        if (nbTransitions >= 0) {
+            this.nbTransitions = nbTransitions;
+        }
+    }
+
+    public void setNbInitStates(final int nbInitStates) {
+        if (nbInitStates >= 0) {
+            this.nbInitStates = nbInitStates;
+        }
+    }
+
     public int getNbExitStates() {
         return nbExitStates;
+    }
+
+    public void setNbExitStates(final int nbExitStates) {
+        if (nbExitStates >= 0) {
+            this.nbExitStates = nbExitStates;
+        }
     }
 
     public int getNbTransitions() {
@@ -93,8 +118,12 @@ public class Automaton {
         return newStates;
     }
 
-    public void setStates(LinkedList<State> states) {
+    public void setStates(final LinkedList<State> states) {
         this.states = new LinkedList<>(states);
+    }
+
+    public void addState(State state) {
+        states.add(state);
     }
 
     public static LinkedList<String> readAutomatonOnFile(final String filename) {
@@ -128,5 +157,82 @@ public class Automaton {
         complementaryAutomaton.setStates(states);
 
         return complementaryAutomaton;
+    }
+
+    public int findNbTransitionsAutomaton() {
+        int nbTransitions = 0;
+
+        for (State state : getStates()) {
+            // automaton's nbTransitions is the sum of the transitions of all states with all symbols
+            HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
+
+            for (String symbols : neighbours.keySet()) {
+                nbTransitions += neighbours.get(symbols).size();
+            }
+        }
+
+        return nbTransitions;
+    }
+
+    public boolean isStandard() {
+        for (State currentState : states) {
+            if (currentState.getIsInit()) {
+                for (String symbol : currentState.getNeighbours().keySet()) {
+                    // we check is there a transition to currentState
+                    for (String arrivalState : currentState.getNeighbours().get(symbol)) {
+                        if (arrivalState.equals(currentState.getId())) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public Automaton automatonStandardization() {
+        if (isStandard()) {
+            System.out.println("Automaton is already standard");
+            return null;
+        }
+        Automaton standardizedAutomaton = new Automaton(this);
+
+        // we create the new entry
+        State newEntry = new State("i", true);
+        standardizedAutomaton.setNbStates(standardizedAutomaton.getNbStates()+1);
+
+
+        LinkedList<State> states = standardizedAutomaton.getStates();
+        for (State currentState : states) {
+            // we add the transitions of the old entries to the new entry
+            if (currentState.getIsInit()) {
+                currentState.setIsInit(!currentState.getIsInit());
+
+                // we get the transitions of the old entry
+                HashMap<String, LinkedList<String>> currentStateNeighbours = currentState.getNeighbours();
+
+                // we merge the transitions between the old entries and the new entry
+                for (String symbol : currentStateNeighbours.keySet()) {
+                    for (String arrivalState : currentStateNeighbours.get(symbol)) {
+                        newEntry.addNeighbour(symbol, arrivalState);
+                    }
+                }
+
+                // if one entry is also an exit then the new entry becomes an exit
+                if (currentState.getIsExit()) {
+                    newEntry.setIsExit(true);
+                    standardizedAutomaton.setNbExitStates(standardizedAutomaton.getNbExitStates()+1);
+                }
+            }
+        }
+
+        // modification the standardized automaton characteristics
+        standardizedAutomaton.setNbInitStates(1);
+        standardizedAutomaton.setStates(states);
+        standardizedAutomaton.addState(newEntry);
+        standardizedAutomaton.setNbTransitions(standardizedAutomaton.findNbTransitionsAutomaton());
+
+        return standardizedAutomaton;
     }
 }
