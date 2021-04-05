@@ -98,71 +98,57 @@ public class Automaton {
     }
     //fonction recuperant les entrées et fonction récupérant les états rendant l'automate non déterministe
     
- public Automaton automatonDeterminisation() {
-    	return new Automaton(states, true, S_ALPH);
-    }
     public void det_sync(Automaton a) {
-		Automaton new_a = new Automaton(a.states, a.SYNC, a.S_ALPH);
+		this.SYNC = true;
+		this.S_ALPH = a.S_ALPH;
 		LinkedList<State> entries_list = new LinkedList<State>();
-		if(new_a.several_entries()) {
+		LinkedList<State> new_list = new LinkedList<State>();
+		if(a.several_entries()) {
 			entries_list.addAll(a.getEntries());
 			do {
 				State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-				System.out.println(entries_list.get(0).getId() + ""+ entries_list.get(0).getNeighbours());
-				System.out.println("\n");
 				new_state.concat(entries_list.get(0), entries_list.get(1), a.aut_alph);
     			entries_list.addLast(new_state);
 				entries_list.remove(0);
 				entries_list.remove(0);
-				System.out.println(entries_list.get(0).getId() + ""+ entries_list.get(0).getNeighbours());
-				System.out.println("\n");
 			}while(entries_list.size()>1);
-			
-			/*if(new_a.several_transitions()) {
-				new_list = a.getSeveralTrans();
-				do {
-    				State new_state = new State(null);
-    				new_state.concat(entries_list.get(0), entries_list.get(1));
-    				entries_list.remove(0);
-    				entries_list.remove(1);
-    				entries_list.add(new_state);
-    			}while(entries_list.size()>1);
-			}
-			entries_list.clear();
-			new_list.clear();*/
-			
 		}
-		this.states.addAll(entries_list);
-		this.SYNC = true;
-		this.S_ALPH = a.S_ALPH;
-    }
-    /*
-	public Automaton det_sync(Automaton a){
-    	if(is_determinist(a)) { //si l'automate est dï¿½jï¿½ dï¿½terministe
-    		return a;
-    	}else {
-    		Automaton a_det = new Automaton(0, null);
-    		LinkedList<State> new_states_list = new LinkedList<State>();
-			if(several_entries(a)) {
-				LinkedList<State> entries_list = new LinkedList<State>();
-				for(int i = 0; i < a.states.size() ; i++) {
-					if(a.states.get(i).isInit()) {
-						entries_list.add(states.get(i));  // on rï¿½cupï¿½re la liste des entrï¿½es
+		new_list.addAll(entries_list);
+		boolean end = true;
+		LinkedList<State> new_list2 = new LinkedList<State>();
+		while(end) {
+			end = true;
+			new_list2.addAll(new_list);
+			for(State states : new_list) {
+				for(String letter : aut_alph) {
+					for(String Stringstates : states.getNeighbours().get(letter)) {
+						State concat_state = a.StringtoState(Stringstates);
+						if(!new_list2.contains(concat_state)) {
+							new_list2.add(concat_state);
+							end = false;
+						}
 					}
 				}
-				LinkedList<State> new_entries_list = (LinkedList<State>) entries_list.clone();
-				for(int i = 0 ; i < entries_list.size() ; i++) {
-					State new_entrie = new State(null, false, false, null);
-					new_entrie.concat_states(entries_list.get(i), entries_list.get(i+1));
-					new_entries_list.add(new_entrie);
-				}
 			}
-	    	return a_det;
-    	}
-    	
+			new_list.addAll(new_list2);
+			
+		}
+		this.states = new_list;
+		for(State states : this.getStates()) {
+			states.removeDuplicates();
+		}
+		
+
+
     }
-    
-    
-    
-    */
+
+	public State StringtoState(String stringstates) {
+		int i = 0;
+		State new_state = new State(stringstates, false, false, new HashMap<String, LinkedList<String>>());
+		while(i<stringstates.length()) {
+			new_state.concat(new_state, this.states.get((int)stringstates.charAt(i)-49), aut_alph);
+			i++;
+		}
+		return new_state;
+	}
 }

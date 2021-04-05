@@ -11,19 +11,29 @@ public class Main {
 		LinkedList<String> s1_nei_b = new LinkedList<String>();
 		LinkedList<String> s2_nei_a = new LinkedList<String>();
 		LinkedList<String> s2_nei_b = new LinkedList<String>();
+		LinkedList<String> s3_nei_a = new LinkedList<String>();
+		LinkedList<String> s3_nei_b = new LinkedList<String>();
+		LinkedList<String> s4_nei_a = new LinkedList<String>();
+		LinkedList<String> s4_nei_b = new LinkedList<String>();
 		//LinkedList<String> s3_nei = new LinkedList<String>();
 		s1_nei_a.add("3");
 		s1_nei_b.add("5");
-		s1_nei_b.add("4");
 
 		s2_nei_a.add("6");
 		s2_nei_a.add("5");
 		s2_nei_b.add("3");
 		s2_nei_b.add("4");
-		s2_nei_b.add("4");
+		
+		s3_nei_a.add("3");
+		s3_nei_b.add("4");
+		
+		s4_nei_a.add("5");
+		s4_nei_b.add("3");
 		
 		HashMap<String, LinkedList<String>> s1_map = new HashMap<String, LinkedList<String>>();
 		HashMap<String, LinkedList<String>> s2_map = new HashMap<String, LinkedList<String>>();
+		HashMap<String, LinkedList<String>> s3_map = new HashMap<String, LinkedList<String>>();
+		HashMap<String, LinkedList<String>> s4_map = new HashMap<String, LinkedList<String>>();
 		//HashMap<String, LinkedList<String>> s3_map = new HashMap<String, LinkedList<String>>();
 		s1_map.put("a", s1_nei_a);
 		s1_map.put("b", s1_nei_b);
@@ -31,12 +41,18 @@ public class Main {
 		s2_map.put("a", s2_nei_a);
 		s2_map.put("b", s2_nei_b);
 		
+		s3_map.put("a", s1_nei_a);
+		s3_map.put("b", s1_nei_b);
+		
+		s4_map.put("a", s2_nei_a);
+		s4_map.put("b", s2_nei_b);
+		
 		State s1 = new State("1", true, false, s1_map);
 		State s2 = new State("2", true, false, s2_map);
-		State s3 = new State("3", false, false, new HashMap<String, LinkedList<String>>());
-		State s4 = new State("4", false, false, new HashMap<String, LinkedList<String>>());
+		State s3 = new State("3", false, false, s3_map);
+		State s4 = new State("4", false, true, s4_map);
 		State s5 = new State("5", false, false, new HashMap<String, LinkedList<String>>());
-		State s6 = new State("6", false, false, new HashMap<String, LinkedList<String>>());
+		State s6 = new State("6", false, true, new HashMap<String, LinkedList<String>>());
 		LinkedList<State> a_states = new LinkedList<State>();
 		a_states.add(s1);
 		a_states.add(s2);
@@ -77,7 +93,6 @@ public class Main {
 			}
 			System.out.println("             fin\n\n");
 		}
-		
 		
 		/*System.out.println("Etat ");
 		for(Map.Entry<String, LinkedList<String>> entry : s1.getNeighbours().entrySet()) {

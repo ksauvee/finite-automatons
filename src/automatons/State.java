@@ -102,17 +102,14 @@ public class State {
 		this.neighbours.get(letter).add(newStateNeighbour);
 	}
 	
-    public void removeDoublon_string() {
-    	System.out.println("Doublons");
-        String output = new String();
+    public void removeDuplicates() {
+        String result = "";
         for (int i = 0; i < this.getId().length(); i++) {
-            for (int j = 0; j < output.length(); j++) {
-                if (this.getId().charAt(i) != output.charAt(j)) {
-                    output = output + this.getId().charAt(i);
-                }
+            if(!result.contains(String.valueOf(this.getId().charAt(i)))) {
+                result += String.valueOf(this.getId().charAt(i));
             }
         }
-        this.id = output;
+        this.setId(result);
     }
 
 	
