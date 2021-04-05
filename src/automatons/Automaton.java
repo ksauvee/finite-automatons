@@ -9,13 +9,13 @@ public class Automaton {
     //private int nbStates; a.states.size() renvoie la taille de la liste d'ï¿½tats directement
     private LinkedList<State> states;
     protected boolean SYNC;
-    protected static int S_ALPH; // [1;26] et si mot vide [1;27]
-    public final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
-    protected static List<String> aut_alph= alphabet.subList(0, S_ALPH);
+    protected int S_ALPH=2; // [1;26] et si mot vide [1;27]
+    protected final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
+    protected final List<String> aut_alph= alphabet.subList(0, S_ALPH);
     
     //Vous me suivez ? Vous confirmez ?
     
-    public Automaton(int nbStates, LinkedList<State> states, boolean sync, int s_alph) {
+    public Automaton(LinkedList<State> states, boolean sync, int s_alph) {
 		super();
 		//this.nbStates = nbStates;
 		this.states = states;
@@ -97,21 +97,23 @@ public class Automaton {
     	return several_trans_list;
     }
     //fonction recuperant les entrées et fonction récupérant les états rendant l'automate non déterministe
-
+    
+ public Automaton automatonDeterminisation() {
+    	return new Automaton(states, true, S_ALPH);
+    }
     public void det_sync(Automaton a) {
-		Automaton new_a = a;
+    	System.out.println("det");
+		Automaton new_a = new Automaton(a.states, a.SYNC, a.S_ALPH);
 		LinkedList<State> entries_list = new LinkedList<State>();
-		LinkedList<State> new_list = new LinkedList<State>();
 		if(new_a.several_entries()) {
 			entries_list.addAll(a.getEntries());
 			do {
 				State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-    			new_state.concat(entries_list.get(0), entries_list.get(1));
+    			new_state.concat(entries_list.get(0), entries_list.get(1), a.aut_alph);
     			entries_list.addLast(new_state);
 				entries_list.remove(0);
 				entries_list.remove(1);
 			}while(entries_list.size()>1);
-			new_list.addAll(entries_list);
 			/*if(new_a.several_transitions()) {
 				new_list = a.getSeveralTrans();
 				do {
@@ -126,10 +128,9 @@ public class Automaton {
 			new_list.clear();*/
 			
 		}
-		this.states = new_list;
+		this.states.addAll(entries_list);
 		this.SYNC = true;
 		this.S_ALPH = a.S_ALPH;
-		this.aut_alph = a.aut_alph;
     }
     /*
 	public Automaton det_sync(Automaton a){
