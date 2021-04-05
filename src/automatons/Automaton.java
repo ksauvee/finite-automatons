@@ -117,36 +117,33 @@ public class Automaton {
 		boolean end = true;
 		LinkedList<State> new_list2 = new LinkedList<State>();
 		while(end) {
-			end = true;
+			end = false;
 			new_list2.addAll(new_list);
 			for(State states : new_list) {
 				for(String letter : aut_alph) {
 					for(String Stringstates : states.getNeighbours().get(letter)) {
 						State concat_state = a.StringtoState(Stringstates);
+						concat_state.removeDuplicates();
 						if(!new_list2.contains(concat_state)) {
 							new_list2.add(concat_state);
-							end = false;
+							end = true;
 						}
 					}
 				}
 			}
 			new_list.clear();
 			new_list.addAll(new_list2);
+			System.out.println(end);
 			
 		}
 		this.states = new_list;
-		for(State states : this.getStates()) {
-			states.removeDuplicates();
-		}
-		
-
-
     }
 
 	public State StringtoState(String stringstates) {
 		int i = 0;
 		State new_state = new State(stringstates, false, false, new HashMap<String, LinkedList<String>>());
 		while(i<stringstates.length()) {
+			System.out.println("Automate :" + this.states.get((int)stringstates.charAt(i)-49).getId()+ this.states.get((int)stringstates.charAt(i)-49).getNeighbours());
 			new_state.concat(new_state, this.states.get((int)stringstates.charAt(i)-49), aut_alph);
 			i++;
 		}

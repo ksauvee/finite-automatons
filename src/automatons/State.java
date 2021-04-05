@@ -66,15 +66,17 @@ public class State {
 		this.neighbours = new HashMap<>();
 		for(String letter : aut_alph) {
 			if(!this.neighbours.containsKey(letter)) {
-				this.neighbours.put(letter, new LinkedList<>());
 				if(a.neighbours.containsKey(letter) && b.neighbours.containsKey(letter)){
+					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(a.neighbours.get(letter));
 					this.neighbours.get(letter).addAll(b.neighbours.get(letter));
 					this.simplification(letter);
 				}else if(a.neighbours.containsKey(letter)) {
+					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(a.neighbours.get(letter));
 					this.simplification(letter);
 				}else if(b.neighbours.containsKey(letter)) {
+					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(b.neighbours.get(letter));
 					this.simplification(letter);
 				}
@@ -84,6 +86,8 @@ public class State {
 		//faire en sorte que les id ne soient pas pareil
 		this.isInit = a.isInit||b.isInit;
 		this.isExit = a.isExit||b.isExit;
+		System.out.println("Automate concat :" + this.getId() +this.getNeighbours());
+
 	}
 	
 	public void simplification(String letter) {
