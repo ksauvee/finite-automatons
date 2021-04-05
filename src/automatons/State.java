@@ -64,8 +64,7 @@ public class State {
 	
 	public void concat(State a, State b, List<String> aut_alph) {
 		this.neighbours = new HashMap<>();
-		List<String> aut_alph2= Arrays.asList("a", "b");
-		for(String letter : aut_alph2) {
+		for(String letter : aut_alph) {
 			if(!this.neighbours.containsKey(letter)) {
 				this.neighbours.put(letter, new LinkedList<>());
 				if(a.neighbours.containsKey(letter) && b.neighbours.containsKey(letter)){
