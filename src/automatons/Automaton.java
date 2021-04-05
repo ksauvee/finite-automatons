@@ -102,21 +102,15 @@ public class Automaton {
 		Automaton new_a = a;
 		LinkedList<State> entries_list = new LinkedList<State>();
 		LinkedList<State> new_list = new LinkedList<State>();
-		while(!new_a.isDeterminist()) {
-			if(new_a.several_entries()) {
-    			entries_list.addAll(a.getEntries());
-    			do {
-    				State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-    				if(entries_list.size()>1) {
-        				new_state.concat(entries_list.get(0), entries_list.get(1));
-    				}
-    				entries_list.remove(0);
-    				if(entries_list.size()>1) {
-    					entries_list.remove(1);
-    				}
-    				entries_list.add(new_state);
-    			}while(entries_list.size()>1);
-    		}
+		if(new_a.several_entries()) {
+			entries_list.addAll(a.getEntries());
+			do {
+				State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
+    			new_state.concat(entries_list.get(0), entries_list.get(1));
+    			entries_list.addLast(new_state);
+				entries_list.remove(0);
+				entries_list.remove(1);
+			}while(entries_list.size()>1);
 			new_list.addAll(entries_list);
 			/*if(new_a.several_transitions()) {
 				new_list = a.getSeveralTrans();

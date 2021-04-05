@@ -79,7 +79,7 @@ public class State {
 				}
 			}
 		}
-		this.setId(a.id+b.id);
+		this.id = a.getId()+b.getId();
 		//faire en sorte que les id ne soient pas pareil
 		this.isInit = a.isInit||b.isInit;
 		this.isExit = a.isExit||b.isExit;
@@ -112,8 +112,6 @@ public class State {
         }
         this.id = output;
     }
-    //salut
-
 
 	
 	
