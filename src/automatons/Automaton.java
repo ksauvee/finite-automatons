@@ -102,18 +102,22 @@ public class Automaton {
     	return new Automaton(states, true, S_ALPH);
     }
     public void det_sync(Automaton a) {
-    	System.out.println("det");
 		Automaton new_a = new Automaton(a.states, a.SYNC, a.S_ALPH);
 		LinkedList<State> entries_list = new LinkedList<State>();
 		if(new_a.several_entries()) {
 			entries_list.addAll(a.getEntries());
 			do {
 				State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-    			new_state.concat(entries_list.get(0), entries_list.get(1), a.aut_alph);
+				System.out.println(entries_list.get(0).getId() + ""+ entries_list.get(0).getNeighbours());
+				System.out.println("\n");
+				new_state.concat(entries_list.get(0), entries_list.get(1), a.aut_alph);
     			entries_list.addLast(new_state);
 				entries_list.remove(0);
-				entries_list.remove(1);
+				entries_list.remove(0);
+				System.out.println(entries_list.get(0).getId() + ""+ entries_list.get(0).getNeighbours());
+				System.out.println("\n");
 			}while(entries_list.size()>1);
+			
 			/*if(new_a.several_transitions()) {
 				new_list = a.getSeveralTrans();
 				do {

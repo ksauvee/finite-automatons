@@ -64,34 +64,23 @@ public class State {
 	
 	public void concat(State a, State b, List<String> aut_alph) {
 		this.neighbours = new HashMap<>();
-		LinkedList<String> test = new LinkedList<String>();
-		test.add("8");
-		this.neighbours.put("c", test);
-		System.out.println("concat");
 		List<String> aut_alph2= Arrays.asList("a", "b");
 		for(String letter : aut_alph2) {
-			System.out.println("concat for");
 			if(!this.neighbours.containsKey(letter)) {
-				System.out.println("concat if1");
 				this.neighbours.put(letter, new LinkedList<>());
 				if(a.neighbours.containsKey(letter) && b.neighbours.containsKey(letter)){
 					this.neighbours.get(letter).addAll(a.neighbours.get(letter));
 					this.neighbours.get(letter).addAll(b.neighbours.get(letter));
 					this.simplification(letter);
-					System.out.println("concat if2");
 				}else if(a.neighbours.containsKey(letter)) {
 					this.neighbours.get(letter).addAll(a.neighbours.get(letter));
 					this.simplification(letter);
-					System.out.println("oncat if 3");
 				}else if(b.neighbours.containsKey(letter)) {
 					this.neighbours.get(letter).addAll(b.neighbours.get(letter));
 					this.simplification(letter);
-					System.out.println("concat if 4");
 				}
 			}
 		}
-		test.add("9");
-		this.neighbours.put("d", test);
 		this.id = a.getId()+b.getId();
 		//faire en sorte que les id ne soient pas pareil
 		this.isInit = a.isInit||b.isInit;
@@ -99,7 +88,6 @@ public class State {
 	}
 	
 	public void simplification(String letter) {
-		System.out.println("simplification");
 		// on a un dictionnaire avec les lettres libellant toutes les transitions du nouvel état
 		// Cependant on a des doublons on veut donc les supprimer
 		LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<String>(this.neighbours.get(letter));
