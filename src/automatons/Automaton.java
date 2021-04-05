@@ -130,6 +130,7 @@ public class Automaton {
 					}
 				}
 			}
+			new_list.clear();
 			new_list.addAll(new_list2);
 			
 		}
