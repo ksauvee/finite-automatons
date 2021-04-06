@@ -3,6 +3,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Automaton {
     //private int nbStates; a.states.size() renvoie la taille de la liste d'ï¿½tats directement
@@ -20,6 +21,9 @@ public class Automaton {
 		this.states = states;
 		this.SYNC = sync;
 		this.S_ALPH = s_alph;
+		if(!sync) {
+			this.aut_alph.add("*");
+		}
 	}
 
 	/*public int getNbStates() {
@@ -101,9 +105,8 @@ public class Automaton {
 		this.SYNC = true;
 		this.S_ALPH = a.S_ALPH;
 		LinkedList<State> entries_list = new LinkedList<State>();
-		LinkedList<State> new_list = new LinkedList<State>();
+		entries_list.addAll(a.getEntries());
 		if(a.several_entries()) {
-			entries_list.addAll(a.getEntries());
 			do {
 				State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
 				new_state.concat(entries_list.get(0), entries_list.get(1), a.aut_alph);
@@ -112,6 +115,7 @@ public class Automaton {
 				entries_list.remove(0);
 			}while(entries_list.size()>1);
 		}
+		LinkedList<State> new_list = new LinkedList<State>();
 		new_list.addAll(entries_list);
 		boolean end = true;
 		LinkedList<State> new_list2 = new LinkedList<State>();
@@ -132,13 +136,12 @@ public class Automaton {
 			}
 			new_list.clear();
 			new_list.addAll(new_list2);
-			System.out.println(end);
 			
 		}
 		this.states = new_list;
     }
     
-	public State StringtoState(String stringstates) {
+	/*public State StringtoState(String stringstates) {
 		int i = 0;
 		State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
 		State new_state2 = new State(new_state);
@@ -149,30 +152,51 @@ public class Automaton {
 			new_state2 = new State(new_state);
 		}
 		return new_state;
-	}
-
-	/*public State StringtoState(String stringstates) {
-		int i = 0;
-		int index=0;
-		LinkedList<State> states_concat = new LinkedList<State>();
-		while(i<stringstates.length()) {
-			index=0;
-			for(State s : this.states) {
-				if(s.getId().equals(String.valueOf(stringstates.charAt(i)))) {
-					states_concat.add(this.states.get(index));
-				}
-				index++;
-			}
-			//find the state which has the correct id
-			i++;
-		}
-		while(states_concat.size()>1) {
-			State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-			new_state.concat(states_concat.get(0), states_concat.get(1), aut_alph);
-			states_concat.addLast(new_state);
-			states_concat.remove(0);
-			states_concat.remove(0);
-		}
-		return states_concat.getFirst();
 	}*/
+
+	public State StringtoState(String stringstates) {
+		System.out.println("stringstates"+stringstates);
+		String[] stringstatesArray = stringstates.split(".");
+		//delete "." of our Array 
+        int index = 0;
+        for (int i=0; i<stringstatesArray.length; i++) {
+        	if (stringstatesArray[i] != ".") {
+                stringstatesArray[index++] = stringstatesArray[i];
+        	}
+        }
+	    stringstatesArray = Arrays.copyOf(stringstatesArray, index);
+	    System.out.println(Arrays.toString(stringstatesArray));
+	    LinkedList<State> list = new LinkedList<State>();
+	    for(String number : stringstatesArray){
+	    	System.out.println("for : String");
+	    	for(State states : this.getStates()) {
+	    		System.out.println("for : states");
+	    		if(states.getId()==(number)) {
+	    			list.add(states);
+	    			System.out.println("On est là"+states.getId());
+	    		}
+	    	}
+	    }
+	    System.out.println("Affichage de list");
+		for(State states1 : list) {
+			System.out.println("Affichage de list for");
+			System.out.println("ID : "+states1.getId());
+			System.out.println("Init : "+states1.isInit());
+			System.out.println("Exit : "+states1.isExit());
+			for(Map.Entry<String, LinkedList<String>> entry : states1.getNeighbours().entrySet()) {
+				System.out.println(entry);
+			}
+		}
+	    
+	    State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
+	    /*if(list.size()>0) {
+	    	do {
+				new_state.concat(list.get(0), list.get(1), this.aut_alph);
+				list.addLast(new_state);
+				list.remove(0);
+				list.remove(0);
+			}while(list.size()>1);
+	    }*/
+		return new_state;
+	}
 }

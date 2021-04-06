@@ -82,7 +82,7 @@ public class State {
 				}
 			}
 		}
-		this.id = a.getId()+b.getId();
+		this.id = a.getId()+"."+b.getId();
 		this.removeDuplicates();
 		//faire en sorte que les id ne soient pas pareil
 		this.isInit = a.isInit||b.isInit;
@@ -99,8 +99,9 @@ public class State {
 		Collections.sort(this.neighbours.get(letter)); // on ordonne la liste
 		String newStateNeighbour ="";
 		for(String number : this.neighbours.get(letter)) {
-			newStateNeighbour+=number;
+			newStateNeighbour+=number+".";
 		}
+		newStateNeighbour = newStateNeighbour.substring(0, newStateNeighbour.length()-1);
 		this.neighbours.get(letter).clear(); // on clear à nouveau la liste de nos voisins
 		this.neighbours.get(letter).add(newStateNeighbour);
 	}
