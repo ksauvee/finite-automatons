@@ -15,11 +15,7 @@ public class State {
     private boolean isExit;
     private HashMap<String, LinkedList<String>> neighbours;
 
-    public State(final String id) {
-    	this.id = id;
-    	this.isInit = false;
-    	this.isExit = false;
-	}
+
     
 	public State(final String id, final boolean isInit, final boolean isExit, final HashMap<String, LinkedList<String>> neighbours) {
 		this.id = id;
@@ -28,6 +24,12 @@ public class State {
 		this.neighbours = neighbours;
 	}
 
+	public State(State other_state) {
+		this.id = other_state.id;
+		this.isInit = other_state.isInit;
+		this.isExit = other_state.isExit;
+		this.neighbours = new HashMap<String, LinkedList<String>>(other_state.neighbours);
+	}
 	public String getId() {
 		return id;
 	}
@@ -63,30 +65,32 @@ public class State {
 
 	
 	public void concat(State a, State b, List<String> aut_alph) {
-		this.neighbours = new HashMap<>();
 		for(String letter : aut_alph) {
 			if(!this.neighbours.containsKey(letter)) {
 				if(a.neighbours.containsKey(letter) && b.neighbours.containsKey(letter)){
 					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(a.neighbours.get(letter));
 					this.neighbours.get(letter).addAll(b.neighbours.get(letter));
+					System.out.println("lettre est dans etat A et B : "+letter);
 					this.simplification(letter);
 				}else if(a.neighbours.containsKey(letter)) {
 					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(a.neighbours.get(letter));
 					this.simplification(letter);
+					System.out.println("lettre est dans etat A : "+letter);
 				}else if(b.neighbours.containsKey(letter)) {
 					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(b.neighbours.get(letter));
 					this.simplification(letter);
+					System.out.println("lettre est dans etat B : "+letter);
 				}
 			}
 		}
 		this.id = a.getId()+b.getId();
+		this.removeDuplicates();
 		//faire en sorte que les id ne soient pas pareil
 		this.isInit = a.isInit||b.isInit;
 		this.isExit = a.isExit||b.isExit;
-		System.out.println("Automate concat :" + this.getId() +this.getNeighbours());
 
 	}
 	

@@ -141,12 +141,26 @@ public class Automaton {
 
 	public State StringtoState(String stringstates) {
 		int i = 0;
-		State new_state = new State(stringstates, false, false, new HashMap<String, LinkedList<String>>());
+		int index=0;
+		LinkedList<State> states_concat = new LinkedList<State>();
 		while(i<stringstates.length()) {
-			System.out.println("Automate :" + this.states.get((int)stringstates.charAt(i)-49).getId()+ this.states.get((int)stringstates.charAt(i)-49).getNeighbours());
-			new_state.concat(new_state, this.states.get((int)stringstates.charAt(i)-49), aut_alph);
+			index=0;
+			for(State s : this.states) {
+				if(s.getId().equals(String.valueOf(stringstates.charAt(i)))) {
+					states_concat.add(this.states.get(index));
+				}
+				index++;
+			}
+			//find the state which has the correct id
 			i++;
 		}
-		return new_state;
+		while(states_concat.size()>1) {
+			State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
+			new_state.concat(states_concat.get(0), states_concat.get(1), aut_alph);
+			states_concat.addLast(new_state);
+			states_concat.remove(0);
+			states_concat.remove(0);
+		}
+		return states_concat.getFirst();
 	}
 }
