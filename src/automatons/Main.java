@@ -62,13 +62,8 @@ public class Main {
 		a_states.add(s6);
 		
 		Automaton a = new Automaton(a_states, true, 2);
-		State test = a.StringtoState("123");
-		test.simplification("a");
-		test.simplification("b");
-		System.out.println("Id : "+test.getId()+", Voisins : "+test.getNeighbours());
 		
-		
-		/*Automaton new_a = new Automaton(new LinkedList<State>(), true, 2);
+		Automaton new_a = new Automaton(new LinkedList<State>(), true, 2);
 		new_a.det_sync(a);
 		for(State states : a.getStates()) {
 			System.out.println("ID : "+states.getId());

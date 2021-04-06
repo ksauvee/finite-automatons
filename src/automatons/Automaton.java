@@ -1,5 +1,4 @@
 package automatons;
-//salut1
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -126,7 +125,7 @@ public class Automaton {
 						concat_state.removeDuplicates();
 						if(!new_list2.contains(concat_state)) {
 							new_list2.add(concat_state);
-							end = true;
+							//end = true;
 						}
 					}
 				}
@@ -138,8 +137,21 @@ public class Automaton {
 		}
 		this.states = new_list;
     }
-
+    
 	public State StringtoState(String stringstates) {
+		int i = 0;
+		State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
+		State new_state2 = new State(new_state);
+		while(i<stringstates.length()) {
+			System.out.println("Automate :" + this.states.get((int)stringstates.charAt(i)-49).getId()+ this.states.get((int)stringstates.charAt(i)-49).getNeighbours());
+			new_state.concat(new_state2, this.states.get((int)stringstates.charAt(i)-49), aut_alph);
+			i++;
+			new_state2 = new State(new_state);
+		}
+		return new_state;
+	}
+
+	/*public State StringtoState(String stringstates) {
 		int i = 0;
 		int index=0;
 		LinkedList<State> states_concat = new LinkedList<State>();
@@ -162,5 +174,5 @@ public class Automaton {
 			states_concat.remove(0);
 		}
 		return states_concat.getFirst();
-	}
+	}*/
 }

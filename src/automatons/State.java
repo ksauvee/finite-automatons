@@ -1,5 +1,4 @@
 package automatons;
-//salut3
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Arrays;
 import java.util.Collections;
 
-
+//salut
 public class State {
     private String id;
     private boolean isInit;
@@ -71,18 +70,15 @@ public class State {
 					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(a.neighbours.get(letter));
 					this.neighbours.get(letter).addAll(b.neighbours.get(letter));
-					System.out.println("lettre est dans etat A et B : "+letter);
 					this.simplification(letter);
 				}else if(a.neighbours.containsKey(letter)) {
 					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(a.neighbours.get(letter));
 					this.simplification(letter);
-					System.out.println("lettre est dans etat A : "+letter);
 				}else if(b.neighbours.containsKey(letter)) {
 					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(b.neighbours.get(letter));
 					this.simplification(letter);
-					System.out.println("lettre est dans etat B : "+letter);
 				}
 			}
 		}
@@ -91,7 +87,6 @@ public class State {
 		//faire en sorte que les id ne soient pas pareil
 		this.isInit = a.isInit||b.isInit;
 		this.isExit = a.isExit||b.isExit;
-
 	}
 	
 	public void simplification(String letter) {
