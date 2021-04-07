@@ -51,22 +51,22 @@ public class Main {
 		Automaton a = new Automaton(a_states, true, 2);
 		//Afficher Automate de départ
 		System.out.println("Automate de départ");
-		//affichage(a);
+		affichage(a);
 
 		//construire et afficher l'automate déterminisé
-		//Automaton a_det = new Automaton(new LinkedList<State>(), a.SYNC, a.S_ALPH);
+		Automaton a_det = a.det_sync();
 		//a_det.det_sync(a);
-		//System.out.println("Automate déterminisé");
-		//affichage(a_det);
+		System.out.println("Automate déterminisé");
+		affichage(a_det);
 		
-		State new_state = a.StringtoState("0.1.3");
+		/*State new_state = a.StringtoState("0.1.3");
 		System.out.println("ID : "+new_state.getId());
 		System.out.println("Init : "+new_state.isInit());
 		System.out.println("Exit : "+new_state.isExit());
 		for(Map.Entry<String, LinkedList<String>> entry : new_state.getNeighbours().entrySet()) {
 			System.out.println(entry);
 		}
-		System.out.println("             fin Etat "+new_state.getId()+"\n\n");
+		System.out.println("             fin Etat "+new_state.getId()+"\n\n");*/
 	}
 	public static void TestB() {
 		//créer les listes de voisins pour chaque caractère de l'alphabet
@@ -132,7 +132,7 @@ public class Main {
 		//construire et afficher l'automate déterminisé
 		Automaton a_det = new Automaton(new LinkedList<State>(), a.SYNC, a.S_ALPH);
 		System.out.println("Automate déterminisé");
-		a_det.det_sync(a); //appeler la fonction de déterminisation
+		//a_det.det_sync(a); //appeler la fonction de déterminisation
 		for(State states1 : a_det.getStates()) {
 			System.out.println("ID : "+states1.getId());
 			System.out.println("Init : "+states1.isInit());

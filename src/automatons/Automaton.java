@@ -3,7 +3,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class Automaton {
     //private int nbStates; a.states.size() renvoie la taille de la liste d'�tats directement
@@ -117,15 +116,15 @@ public class Automaton {
     			size_before=a.getStates().size();
     			for(State states : a.getStates()) {
     				for(String letter : a.aut_alph) {
-    					if(!states.several_transitions(letter)) {    //"a" : 0->1->2    "a": (0.1.2)->
-    						State new_state = this.StringtoState(states.getNeighbours().get(letter).get(0));
-    					}else {
-    						
+    					for(String id : states.getNeighbours().get(letter)) {
+    						if(!a.getStates().contains(StringtoState(id))){
+    							a.getStates().add(StringtoState(id));
+    						}
     					}
     				}
     			}
     		}while(size_before != a.getStates().size());
-    		
+    		return a;
     	}
 		
 		/*LinkedList<State> entries_list = new LinkedList<State>();
