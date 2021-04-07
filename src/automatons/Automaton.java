@@ -114,15 +114,21 @@ public class Automaton {
     		int size_before;
     		do{
     			size_before=a.getStates().size();
+    			LinkedList<State> list = new LinkedList<State>(a.getStates());
     			for(State states : a.getStates()) {
     				for(String letter : a.aut_alph) {
-    					for(String id : states.getNeighbours().get(letter)) {
-    						if(!a.getStates().contains(StringtoState(id))){
-    							a.getStates().add(StringtoState(id));
-    						}
+    					if(states.getNeighbours().containsKey(letter)) {
+    						for(String id : states.getNeighbours().get(letter)) {
+        						if(!a.getStates().contains(this.StringtoState(id))){
+        							list.add(this.StringtoState(id));
+        						}
+        					}
     					}
     				}
     			}
+    			a.getStates().clear();
+    			a.getStates().addAll(list);
+    			System.out.println(a.getStates().size()+" avant "+size_before);
     		}while(size_before != a.getStates().size());
     		return a;
     	}
