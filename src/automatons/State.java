@@ -61,6 +61,13 @@ public class State {
 	public void setNeighbours(HashMap<String, LinkedList<String>> neighbours) {
 		this.neighbours = neighbours;
 	}
+	
+	public boolean several_transitions(String letter) {
+		if (neighbours.get(letter).size() > 1) {
+			return true;
+		}
+		return false;
+	}
 
 	
 	public void concat(State a, State b, List<String> aut_alph) {

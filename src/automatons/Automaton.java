@@ -43,7 +43,7 @@ public class Automaton {
 	}
 
     public boolean isDeterminist() {
-    	if (several_entries() || several_transitions()) {
+    	if (several_entries() || A()) {
     		//System.out.println("L'automate n'est pas deterministe");
     		return false;
     	}
@@ -74,11 +74,11 @@ public class Automaton {
     	return entries_list;
     }
 
-    public boolean several_transitions() {
+    public boolean A() {
     	for (State state : states) {
 			HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
     		for (String letter : neighbours.keySet()) {
-    			if (neighbours.get(letter).size() > 1) {
+    			if (state.several_transitions(letter)) {
     				return true;
 				}
 			}
@@ -100,11 +100,35 @@ public class Automaton {
     	return several_trans_list;
     }
     //fonction recuperant les entrées et fonction récupérant les états rendant l'automate non déterministe
+
     
-    public void det_sync(Automaton a) {
-		this.SYNC = true;
-		this.S_ALPH = a.S_ALPH;
-		LinkedList<State> entries_list = new LinkedList<State>();
+    public Automaton det_sync() {
+    	if(this.isDeterminist()) {
+    		return this;
+    	}else {
+    		Automaton a = new Automaton(new LinkedList<State>(), true, this.S_ALPH);
+    		if(a.several_entries()) {
+    			a.getStates().add(concat_list(getEntries()));
+    		}else {
+    			a.getStates().add(getEntries().get(0));
+    		}
+    		int size_before;
+    		do{
+    			size_before=a.getStates().size();
+    			for(State states : a.getStates()) {
+    				for(String letter : a.aut_alph) {
+    					if(!states.several_transitions(letter)) {    //"a" : 0->1->2    "a": (0.1.2)->
+    						State new_state = this.StringtoState(states.getNeighbours().get(letter).get(0));
+    					}else {
+    						
+    					}
+    				}
+    			}
+    		}while(size_before != a.getStates().size());
+    		
+    	}
+		
+		/*LinkedList<State> entries_list = new LinkedList<State>();
 		entries_list.addAll(a.getEntries());
 		if(a.several_entries()) {
 			do {
@@ -138,7 +162,7 @@ public class Automaton {
 			new_list.addAll(new_list2);
 			
 		}
-		this.states = new_list;
+		this.states = new_list;*/
     }
     
     public State concat_list(LinkedList<State> list) {
