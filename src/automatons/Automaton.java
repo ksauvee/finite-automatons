@@ -44,10 +44,10 @@ public class Automaton {
 
     public boolean isDeterminist() {
     	if (several_entries() || several_transitions()) {
-    		System.out.println("L'automate n'est pas deterministe");
+    		//System.out.println("L'automate n'est pas deterministe");
     		return false;
     	}
-    	System.out.println("L'automate est deterministe");
+    	//System.out.println("L'automate est deterministe");
     	return true;
     }
     
@@ -141,44 +141,60 @@ public class Automaton {
 		this.states = new_list;
     }
     
-	/*public State StringtoState(String stringstates) {
-		int i = 0;
-		State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-		State new_state2 = new State(new_state);
-		while(i<stringstates.length()) {
-			System.out.println("Automate :" + this.states.get((int)stringstates.charAt(i)-49).getId()+ this.states.get((int)stringstates.charAt(i)-49).getNeighbours());
-			new_state.concat(new_state2, this.states.get((int)stringstates.charAt(i)-49), aut_alph);
-			i++;
-			new_state2 = new State(new_state);
-		}
-		return new_state;
-	}*/
+
 
 	public State StringtoState(String stringstates) {
-		System.out.println("stringstates"+stringstates);
-		String[] stringstatesArray = stringstates.split(".");
-		//delete "." of our Array 
-        int index = 0;
-        for (int i=0; i<stringstatesArray.length; i++) {
-        	if (stringstatesArray[i] != ".") {
-                stringstatesArray[index++] = stringstatesArray[i];
-        	}
-        }
-	    stringstatesArray = Arrays.copyOf(stringstatesArray, index);
-	    System.out.println(Arrays.toString(stringstatesArray));
+		String[] stringstatesArray = stringstates.split("\\.");
+		LinkedList<State> list = new LinkedList<State>();
+		for(String index : stringstatesArray) {
+			for(State states : this.getStates()) {
+				if(index.equals(states.getId())) {
+					list.add(states);
+				}
+			}
+		}
+		System.out.println("iiiiiiiiii");
+		for(State states : list) {
+			System.out.println("ID : "+states.getId());
+			System.out.println("Init : "+states.isInit());
+			System.out.println("Exit : "+states.isExit());
+			for(Map.Entry<String, LinkedList<String>> entry : states.getNeighbours().entrySet()) {
+				System.out.println(entry);
+			}
+			System.out.println("             fin Etat "+states.getId()+"\n\n");
+		}
+		return this.getStates().get(0);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/*//System.out.println("stringstates"+stringstates);
+		String[] stringstatesArray = stringstates.split("\\."); //01.23.34 [01., 23. ,34. ] [01, ., 23, .,34,.]
+	    //System.out.println(Arrays.toString(stringstatesArray));
 	    LinkedList<State> list = new LinkedList<State>();
 	    for(String number : stringstatesArray){
-	    	System.out.println("for : String");
+	    	//System.out.println("for : String");
 	    	for(State states : this.getStates()) {
-	    		System.out.println("for : states");
+	    		//System.out.println("for : states");
 	    		if(states.getId()==(number)) {
 	    			list.add(states);
-	    			System.out.println("On est là"+states.getId());
+	    			//System.out.println("On est là"+states.getId());
 	    		}
 	    	}
 	    }
-	    System.out.println("Affichage de list");
-		for(State states1 : list) {
+	    //System.out.println("Affichage de list");
+		/*for(State states1 : list) {
 			System.out.println("Affichage de list for");
 			System.out.println("ID : "+states1.getId());
 			System.out.println("Init : "+states1.isInit());
@@ -188,15 +204,31 @@ public class Automaton {
 			}
 		}
 	    
+	    
+	    
 	    State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-	    /*if(list.size()>0) {
+	    if(list.size()>0) {
 	    	do {
 				new_state.concat(list.get(0), list.get(1), this.aut_alph);
 				list.addLast(new_state);
 				list.remove(0);
 				list.remove(0);
 			}while(list.size()>1);
-	    }*/
+	    }
 		return new_state;
+		
+		*
+		public State StringtoState(String stringstates) {
+		int i = 0;
+		State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
+		State new_state2 = new State(new_state);
+		while(i<stringstates.length()) {
+			//System.out.println("Automate :" + this.states.get((int)stringstates.charAt(i)-49).getId()+ this.states.get((int)stringstates.charAt(i)-49).getNeighbours());
+			new_state.concat(new_state2, this.states.get((int)stringstates.charAt(i)-49), aut_alph);
+			i++;
+			new_state2 = new State(new_state);
+		}
+		return new_state;
+	}*/
 	}
 }

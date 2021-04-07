@@ -45,56 +45,22 @@ public class Main {
 		a_states.add(s1);
 		a_states.add(s2);
 		a_states.add(s3);
+		
+		
 		//Construire l'automate avec son constructeur (synchrone ou non ?, la taille de son alphabet" et la liste des états construite)
 		Automaton a = new Automaton(a_states, true, 2);
 		//Afficher Automate de départ
 		System.out.println("Automate de départ");
-		for(State states : a.getStates()) {
-			System.out.println("ID : "+states.getId());
-			System.out.println("Init : "+states.isInit());
-			System.out.println("Exit : "+states.isExit());
-			for(Map.Entry<String, LinkedList<String>> entry : states.getNeighbours().entrySet()) {
-				/*String key = entry.getKey();
-				LinkedList<String> list = entry.getValue();
-				System.out.println("Lettre :" + key);
-				for(String number : list) {
-					System.out.println(number+" ");}*/
-				System.out.println(entry);
-			}
-			System.out.println("             fin\n\n");
-		}
-		State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-		new_state.concat(s0,s1,a.aut_alph);
-		System.out.println("ID : "+new_state.getId());
-		System.out.println("Init : "+new_state.isInit());
-		System.out.println("Exit : "+new_state.isExit());
-		for(Map.Entry<String, LinkedList<String>> entry : new_state.getNeighbours().entrySet()) {
-			/*String key = entry.getKey();
-			LinkedList<String> list = entry.getValue();
-			System.out.println("Lettre :" + key);
-			for(String number : list) {
-				System.out.println(number+" ");}*/
-			System.out.println(entry);
-		}
-		
+		affichage(a);
+
 		//construire et afficher l'automate déterminisé
-		Automaton a_det = new Automaton(new LinkedList<State>(), a.SYNC, a.S_ALPH);
-		a_det.det_sync(a);
-		System.out.println("Automate déterminisé");
-		for(State states1 : a_det.getStates()) {
-			System.out.println("ID : "+states1.getId());
-			System.out.println("Init : "+states1.isInit());
-			System.out.println("Exit : "+states1.isExit());
-			for(Map.Entry<String, LinkedList<String>> entry : states1.getNeighbours().entrySet()) {
-				/*String key = entry.getKey();
-				LinkedList<String> list = entry.getValue();
-				System.out.println("Lettre :" + key);
-				for(String number : list) {
-					System.out.println(number+" ");}*/
-				System.out.println(entry);
-			}
-			System.out.println("             fin\n\n");
-		}
+		//Automaton a_det = new Automaton(new LinkedList<State>(), a.SYNC, a.S_ALPH);
+		//a_det.det_sync(a);
+		//System.out.println("Automate déterminisé");
+		//affichage(a_det);
+		
+		State new_state = a.StringtoState("0.1");
+		
 	}
 	public static void TestB() {
 		//créer les listes de voisins pour chaque caractère de l'alphabet
@@ -188,9 +154,19 @@ public class Main {
 	public static void TestD() {
 		
 	}
+	public static void affichage(Automaton a) {
+		for(State states : a.getStates()) {
+			System.out.println("ID : "+states.getId());
+			System.out.println("Init : "+states.isInit());
+			System.out.println("Exit : "+states.isExit());
+			for(Map.Entry<String, LinkedList<String>> entry : states.getNeighbours().entrySet()) {
+				System.out.println(entry);
+			}
+			System.out.println("             fin Etat "+states.getId()+"\n\n");
+		}
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
 		TestA();
 		//TestB();
 		
