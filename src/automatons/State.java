@@ -109,14 +109,14 @@ public class State {
     public void removeDuplicates() {
         String result = "";
         for (int i = 0; i < this.getId().length(); i++) {
-            if(!result.contains(String.valueOf(this.getId().charAt(i)))) {
+            if(!result.contains(String.valueOf(this.getId().charAt(i)))||this.getId().charAt(i)=='.') {
                 result += String.valueOf(this.getId().charAt(i));
             }
         }
         this.setId(result);
     }
 
-	
+
 	
 	
 	/*

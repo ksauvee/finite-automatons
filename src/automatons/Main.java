@@ -51,7 +51,7 @@ public class Main {
 		Automaton a = new Automaton(a_states, true, 2);
 		//Afficher Automate de départ
 		System.out.println("Automate de départ");
-		affichage(a);
+		//affichage(a);
 
 		//construire et afficher l'automate déterminisé
 		//Automaton a_det = new Automaton(new LinkedList<State>(), a.SYNC, a.S_ALPH);
@@ -59,8 +59,14 @@ public class Main {
 		//System.out.println("Automate déterminisé");
 		//affichage(a_det);
 		
-		State new_state = a.StringtoState("0.1");
-		
+		State new_state = a.StringtoState("0.1.3");
+		System.out.println("ID : "+new_state.getId());
+		System.out.println("Init : "+new_state.isInit());
+		System.out.println("Exit : "+new_state.isExit());
+		for(Map.Entry<String, LinkedList<String>> entry : new_state.getNeighbours().entrySet()) {
+			System.out.println(entry);
+		}
+		System.out.println("             fin Etat "+new_state.getId()+"\n\n");
 	}
 	public static void TestB() {
 		//créer les listes de voisins pour chaque caractère de l'alphabet

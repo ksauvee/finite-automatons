@@ -141,7 +141,17 @@ public class Automaton {
 		this.states = new_list;
     }
     
-
+    public State concat_list(LinkedList<State> list) {
+    	State state_concat = new State("", false, false, new HashMap<String, LinkedList<String>>());
+    	while(list.size()>1) {
+    		state_concat.concat(list.get(0), list.get(1), aut_alph);
+    		list.remove(0);
+    		list.remove(0);
+    		list.addFirst(state_concat);
+    		System.out.println("here");
+    	}
+    	return state_concat;
+    }
 
 	public State StringtoState(String stringstates) {
 		String[] stringstatesArray = stringstates.split("\\.");
@@ -153,18 +163,8 @@ public class Automaton {
 				}
 			}
 		}
-		System.out.println("iiiiiiiiii");
-		for(State states : list) {
-			System.out.println("ID : "+states.getId());
-			System.out.println("Init : "+states.isInit());
-			System.out.println("Exit : "+states.isExit());
-			for(Map.Entry<String, LinkedList<String>> entry : states.getNeighbours().entrySet()) {
-				System.out.println(entry);
-			}
-			System.out.println("             fin Etat "+states.getId()+"\n\n");
-		}
-		return this.getStates().get(0);
-		
+		State new_state = concat_list(list);
+		return new_state;
 		
 		
 		
@@ -231,4 +231,5 @@ public class Automaton {
 		return new_state;
 	}*/
 	}
+
 }
