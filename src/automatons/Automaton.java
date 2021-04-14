@@ -183,7 +183,14 @@ public class Automaton {
     }
 
 	public State StringtoState(String stringstates) {
+		System.out.println("Salut");
+		System.out.println(stringstates);
 		String[] stringstatesArray = stringstates.split("\\.");
+		int j = 0;
+		for(String i : stringstatesArray) {
+			System.out.println("Element "+j+"du tableau : "+ i);
+			j++;
+		}
 		LinkedList<State> list = new LinkedList<State>();
 		for(String index : stringstatesArray) {
 			for(State states : this.getStates()) {

@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Arrays;
 import java.util.Collections;
 
-//salut
+//salut 
 public class State {
     private String id;
     private boolean isInit;
