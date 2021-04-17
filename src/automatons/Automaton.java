@@ -43,7 +43,7 @@ public class Automaton {
 	}
 
     public boolean isDeterminist() {
-    	if (several_entries() || A()) {
+    	if (several_entries() || several_trans()) {
     		//System.out.println("L'automate n'est pas deterministe");
     		return false;
     	}
@@ -74,7 +74,7 @@ public class Automaton {
     	return entries_list;
     }
 
-    public boolean A() {
+    public boolean several_trans() {
     	for (State state : states) {
 			HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
     		for (String letter : neighbours.keySet()) {
@@ -116,14 +116,14 @@ public class Automaton {
     	}else {
     		simplification_aut();
     		Automaton a = new Automaton(new LinkedList<State>(), true, this.S_ALPH);
-    		if(a.several_entries()) {
+    		if(this.several_entries()) {
     			a.getStates().add(concat_list(getEntries()));
+    			a.getStates().get(0).setInit(true);
     		}else {
     			a.getStates().add(getEntries().get(0));
     		}
     		LinkedList<State> clone_list = new LinkedList<State>();
     		boolean modif = false;
-    		int i = 0;
     		do {
     			modif = false;
     			for(State state : a.getStates()) {

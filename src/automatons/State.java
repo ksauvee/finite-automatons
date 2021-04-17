@@ -92,7 +92,7 @@ public class State {
 		this.id = a.getId()+"."+b.getId();
 		this.removeDuplicates();
 		//faire en sorte que les id ne soient pas pareil
-		this.isInit = a.isInit||b.isInit;
+		this.isInit = false;
 		this.isExit = a.isExit||b.isExit;
 	}
 	
