@@ -113,16 +113,23 @@ public class Automaton {
     		}
     		int size_before;
     		do{
+    			System.out.println("Début");
     			size_before=a.getStates().size();
-    			LinkedList<State> list = new LinkedList<State>(a.getStates());
+    			LinkedList<State> list = (LinkedList<State>) a.getStates().clone();
     			for(State states : a.getStates()) {
+    				System.out.println("Début2");
     				for(String letter : a.aut_alph) {
+    					System.out.println("Début3");
     					if(states.getNeighbours().containsKey(letter)) {
+    						String new_id = "";
     						for(String id : states.getNeighbours().get(letter)) {
-        						if(!a.getStates().contains(this.StringtoState(id))){
-        							list.add(this.StringtoState(id));
-        						}
+    							new_id+=id+".";
+    							System.out.println("Début4");
         					}
+    						if(!a.getStates().contains(this.StringtoState(new_id))){
+    							list.add(this.StringtoState(new_id));
+    							
+    						}
     					}
     				}
     			}
@@ -131,6 +138,7 @@ public class Automaton {
     			System.out.println(a.getStates().size()+" avant "+size_before);
     		}while(size_before != a.getStates().size());
     		return a;
+    		
     	}
 		
 		/*LinkedList<State> entries_list = new LinkedList<State>();
@@ -177,13 +185,11 @@ public class Automaton {
     		list.remove(0);
     		list.remove(0);
     		list.addFirst(state_concat);
-    		System.out.println("here");
     	}
     	return state_concat;
     }
 
 	public State StringtoState(String stringstates) {
-		System.out.println("Salut");
 		System.out.println(stringstates);
 		String[] stringstatesArray = stringstates.split("\\.");
 		System.out.println(Arrays.toString(stringstatesArray));

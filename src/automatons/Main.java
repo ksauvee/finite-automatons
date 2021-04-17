@@ -52,12 +52,13 @@ public class Main {
 		//Afficher Automate de départ
 		System.out.println("Automate de départ");
 		affichage(a);
+		
 
 		//construire et afficher l'automate déterminisé
-		Automaton a_det = a.det_sync();
+		/*Automaton a_det = a.det_sync();
 		//a_det.det_sync(a);
 		System.out.println("Automate déterminisé");
-		affichage(a_det);
+		affichage(a_det);*/
 		
 		/*State new_state = a.StringtoState("0.1.3");
 		System.out.println("ID : "+new_state.getId());
