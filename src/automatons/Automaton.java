@@ -105,7 +105,9 @@ public class Automaton {
     public void simplification_aut() {
     	for(State states : getStates()) {
 			for(String letter : aut_alph) {
-				states.simplification(letter);
+				if(states.getNeighbours().containsKey(letter)) {
+					states.simplification(letter);
+				}
 			}
 		}
     }
@@ -130,7 +132,7 @@ public class Automaton {
     				for(String letter : aut_alph) {
     					if(state.getNeighbours().containsKey(letter)) {
     						State new_state = this.StringtoState(state.getNeighbours().get(letter).get(0));
-    						new_state.removeDuplicates();
+    						//new_state.removeDuplicates();
     						clone_list.add(new_state);
     					}
     				}
@@ -150,45 +152,6 @@ public class Automaton {
     			}
     			clone_list.clear();
     		}while(modif);
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-    		
-    		/*
-    		int size_before;
-    		
-    		do{
-    			System.out.println("Début");
-    			size_before=a.getStates().size();
-    			LinkedList<State> list = (LinkedList<State>) a.getStates().clone();
-    			for(State states : a.getStates()) {
-    				System.out.println("Début2");
-    				for(String letter : a.aut_alph) {
-    					System.out.println("Début3");
-    					if(states.getNeighbours().containsKey(letter)) {
-    						String new_id = "";
-    						for(String id : states.getNeighbours().get(letter)) {
-    							new_id+=id+".";
-    							System.out.println("Début4");
-        					}
-    						if(!a.getStates().contains(this.StringtoState(new_id))){
-    							list.add(this.StringtoState(new_id));
-    							
-    						}
-    					}
-    				}
-    			}
-    			a.getStates().clear();
-    			a.getStates().addAll(list);
-    			System.out.println(a.getStates().size()+" avant "+size_before);
-    		}while(size_before != a.getStates().size());*/
     		return a;
     	}
     }
