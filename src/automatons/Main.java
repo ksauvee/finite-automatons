@@ -71,6 +71,7 @@ public class Main {
 		System.out.println("             fin Etat "+new_state.getId()+"\n\n");*/
 	}
 	public static void TestB() {
+		//Salut
 		LinkedList<String> s0_nei_a = new LinkedList<String>();
 		LinkedList<String> s0_nei_b = new LinkedList<String>();
 		LinkedList<String> s1_nei_a = new LinkedList<String>();

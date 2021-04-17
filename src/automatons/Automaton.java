@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Automaton {
-    //private int nbStates; a.states.size() renvoie la taille de la liste d'�tats directement
+    //private int nbStates; a.states.size() renvoie la taille de la liste d'�tats directement salut
     private LinkedList<State> states;
     protected boolean SYNC;
     protected int S_ALPH=2; // [1;26] et si mot vide [1;27]
