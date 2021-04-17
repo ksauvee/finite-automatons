@@ -108,7 +108,7 @@ public class State {
 		for(String number : this.neighbours.get(letter)) {
 			newStateNeighbour+=number+".";
 		}
-		newStateNeighbour = newStateNeighbour.substring(0, newStateNeighbour.length()-1);
+		//newStateNeighbour = newStateNeighbour.substring(0, newStateNeighbour.length()-1);
 		this.neighbours.get(letter).clear(); // on clear à nouveau la liste de nos voisins
 		this.neighbours.get(letter).add(newStateNeighbour);
 	}

@@ -3,6 +3,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Automaton {
     //private int nbStates; a.states.size() renvoie la taille de la liste d'ï¿½tats directement
@@ -99,19 +100,70 @@ public class Automaton {
     	return several_trans_list;
     }
     //fonction recuperant les entrées et fonction récupérant les états rendant l'automate non déterministe
-
+    
+    
+    public void simplification_aut() {
+    	for(State states : getStates()) {
+			for(String letter : aut_alph) {
+				states.simplification(letter);
+			}
+		}
+    }
     
     public Automaton det_sync() {
     	if(this.isDeterminist()) {
     		return this;
     	}else {
+    		simplification_aut();
     		Automaton a = new Automaton(new LinkedList<State>(), true, this.S_ALPH);
     		if(a.several_entries()) {
     			a.getStates().add(concat_list(getEntries()));
     		}else {
     			a.getStates().add(getEntries().get(0));
     		}
+    		LinkedList<State> clone_list = new LinkedList<State>();
+    		boolean modif = false;
+    		int i = 0;
+    		do {
+    			modif = false;
+    			for(State state : a.getStates()) {
+    				for(String letter : aut_alph) {
+    					if(state.getNeighbours().containsKey(letter)) {
+    						State new_state = this.StringtoState(state.getNeighbours().get(letter).get(0));
+    						new_state.removeDuplicates();
+    						clone_list.add(new_state);
+    					}
+    				}
+    			}
+    			boolean add = true;
+    			for(State state : clone_list) {
+    				add = true;
+    				for(State state2 : a.getStates()) {
+    					if(state.getId().equals(state2.getId())) {
+    						add = false;
+    					}
+    				}
+    				if(add) {
+    					a.getStates().add(state);
+    					modif = true;
+    				}
+    			}
+    			clone_list.clear();
+    		}while(modif);
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		
+    		/*
     		int size_before;
+    		
     		do{
     			System.out.println("Début");
     			size_before=a.getStates().size();
@@ -136,46 +188,9 @@ public class Automaton {
     			a.getStates().clear();
     			a.getStates().addAll(list);
     			System.out.println(a.getStates().size()+" avant "+size_before);
-    		}while(size_before != a.getStates().size());
+    		}while(size_before != a.getStates().size());*/
     		return a;
-    		
     	}
-		
-		/*LinkedList<State> entries_list = new LinkedList<State>();
-		entries_list.addAll(a.getEntries());
-		if(a.several_entries()) {
-			do {
-				State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-				new_state.concat(entries_list.get(0), entries_list.get(1), a.aut_alph);
-    			entries_list.addLast(new_state);
-				entries_list.remove(0);
-				entries_list.remove(0);
-			}while(entries_list.size()>1);
-		}
-		LinkedList<State> new_list = new LinkedList<State>();
-		new_list.addAll(entries_list);
-		boolean end = true;
-		LinkedList<State> new_list2 = new LinkedList<State>();
-		while(end) {
-			end = false;
-			new_list2.addAll(new_list);
-			for(State states : new_list) {
-				for(String letter : aut_alph) {
-					for(String Stringstates : states.getNeighbours().get(letter)) {
-						State concat_state = a.StringtoState(Stringstates);
-						concat_state.removeDuplicates();
-						if(!new_list2.contains(concat_state)) {
-							new_list2.add(concat_state);
-							//end = true;
-						}
-					}
-				}
-			}
-			new_list.clear();
-			new_list.addAll(new_list2);
-			
-		}
-		this.states = new_list;*/
     }
     
     public State concat_list(LinkedList<State> list) {
@@ -190,9 +205,7 @@ public class Automaton {
     }
 
 	public State StringtoState(String stringstates) {
-		System.out.println(stringstates);
 		String[] stringstatesArray = stringstates.split("\\.");
-		System.out.println(Arrays.toString(stringstatesArray));
 		LinkedList<State> list = new LinkedList<State>();
 		for(String index : stringstatesArray) {
 			for(State states : this.getStates()) {
@@ -201,7 +214,13 @@ public class Automaton {
 				}
 			}
 		}
-		State new_state = concat_list(list);
+		State new_state;
+		if(list.size()==1) {
+			new_state = list.get(0);
+		}else {
+			new_state = concat_list(list);
+		}
+		
 		return new_state;
 		
 		
