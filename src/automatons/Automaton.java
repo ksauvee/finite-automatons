@@ -152,6 +152,7 @@ public class Automaton {
     			}
     			clone_list.clear();
     		}while(modif);
+    		a.stringtoList();
     		return a;
     	}
     }
@@ -251,6 +252,10 @@ public class Automaton {
 			for(String letter : aut_alph) {
 				if(s.getNeighbours().containsKey(letter)) {
 					String[] stringArray = s.getNeighbours().get(letter).get(0).split("\\.");
+					s.getNeighbours().get(letter).remove(0);
+					for(String id: stringArray) {
+						s.getNeighbours().get(letter).add(id);
+					}
 				}
 			}
 		}
