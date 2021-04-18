@@ -145,7 +145,7 @@ public class Automaton {
     						add = false;
     					}
     				}
-    				if(add) {
+    				if(add && state.getId()!= "") {
     					a.getStates().add(state);
     					modif = true;
     				}
