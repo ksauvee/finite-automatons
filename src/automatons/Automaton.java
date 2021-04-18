@@ -191,14 +191,6 @@ public class Automaton {
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
 		/*//System.out.println("stringstates"+stringstates);
 		String[] stringstatesArray = stringstates.split("\\."); //01.23.34 [01., 23. ,34. ] [01, ., 23, .,34,.]
 	    //System.out.println(Arrays.toString(stringstatesArray));
@@ -250,6 +242,18 @@ public class Automaton {
 		}
 		return new_state;
 	}*/
+	}
+	
+	
+	public void stringtoList() { 
+		// transforme les voisins en partant de a->1.10.02 à a->1->10->02
+		for(State s : this.getStates()) {
+			for(String letter : aut_alph) {
+				if(s.getNeighbours().containsKey(letter)) {
+					String[] stringArray = s.getNeighbours().get(letter).get(0).split("\\.");
+				}
+			}
+		}
 	}
 
 }
