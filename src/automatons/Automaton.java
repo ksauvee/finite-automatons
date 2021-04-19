@@ -3,7 +3,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Queue;
 
 public class Automaton {
     //private int nbStates; a.states.size() renvoie la taille de la liste d'ï¿½tats directement salut
@@ -11,9 +11,8 @@ public class Automaton {
     protected boolean SYNC;
     protected int S_ALPH=2; // [1;26] et si mot vide [1;27]
     protected final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
-    protected final List<String> aut_alph= alphabet.subList(0, S_ALPH);
+    protected final List<String> aut_alph= alphabet.subList(0, S_ALPH);	
     
-    //Vous me suivez ? Vous confirmez ?
     
     public Automaton(LinkedList<State> states, boolean sync, int s_alph) {
 		super();
@@ -154,7 +153,6 @@ public class Automaton {
     			}
     			clone_list.clear();
     		}while(modif);
-    		a.stringtoList();
     		return a;
     	}
     }
@@ -192,19 +190,9 @@ public class Automaton {
 	}
 	
 	
-	public void stringtoList() { 
-		// transforme les voisins en partant de a->1.10.02 à a->1->10->02
-		for(State s : this.getStates()) {
-			for(String letter : aut_alph) {
-				if(s.getNeighbours().containsKey(letter)) {
-					String[] stringArray = s.getNeighbours().get(letter).get(0).split("\\.");
-					s.getNeighbours().get(letter).remove(0);
-					for(String id: stringArray) {
-						s.getNeighbours().get(letter).add(id);
-					}
-				}
-			}
-		}
+	public void remove_epsilon(){
+		HashMap<String, LinkedList<String>> closed_epsilon = new HashMap<String, LinkedList<String>>();
+		
 	}
 
 }
