@@ -62,7 +62,9 @@ public class State {
 	}
 	
 	public boolean several_transitions(String letter) {
+		//permit to know if a state as several transtion with the same letter 
 		if (neighbours.get(letter).size() > 1) {
+		//if for a letter the size of the string linked list is superior to 1, the state has several transition
 			return true;
 		}
 		return false;
@@ -70,8 +72,18 @@ public class State {
 
 	
 	public void concat(State a, State b, List<String> aut_alph) {
+		//permit to concatenate 2 states
+		//if you have 0 : a->1->4 | b->2 and 1 :a->1->2 
+		//you will have 0.1 : a->1->2->4 | b->2
+		//the state in which we concatenate two strings is supposed to be empty
 		for(String letter : aut_alph) {
+			//we browse all the letter a state can have
 			if(!this.neighbours.containsKey(letter)) {
+				// for security we check if the letter isn't already in the state in which we concatenate the two
+				//3 cases possible the letter :
+				//the letter is in both state -> we add all transitions of both states
+				//the letter is only in the first state-> we only add the transitions of the first state
+				//the letter is only in the second state-> we only add the transitions of the second state
 				if(a.neighbours.containsKey(letter) && b.neighbours.containsKey(letter)){
 					this.neighbours.put(letter, new LinkedList<>());
 					this.neighbours.get(letter).addAll(a.neighbours.get(letter));
@@ -89,22 +101,29 @@ public class State {
 			}
 		}
 		this.id = a.getId()+"."+b.getId();
+		//concatenate the name of the states with a point in the middle like for 0 and 1 you have 0.1
 		this.removeDuplicates();
-		//faire en sorte que les id ne soient pas pareil
+		//if the the two strings has a common name it avoid to have it two times
+		//for exemple if you concatenate 0.1 and 1.2.3 it avoid to have 0.1.1.2.3 but 0.1.2.3
 		this.isInit = false;
 		this.isExit = a.isExit||b.isExit;
 	}
 	
 	public void simplification(String letter) {
-		// on a un dictionnaire avec les lettres libellant toutes les transitions du nouvel état
-		// Cependant on a des doublons on veut donc les supprimer
-		
+		//function that permit :
+		//- to go from a linked list of string in transition to one string with transition separate by a point
+		//- remove the duplicates in the list of transitions and sort them
+		//you will go from 0 : a->0->1->3->8 | b->2->1->3->->3
+		//              to 0 : a->0->1->3->8 | b->1.2.3 if you call the function for b
 		LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<String>(this.neighbours.get(letter));
-		//on crée une nouvelle liste de type hset qui en supporte pas les doublons
-		this.neighbours.get(letter).clear(); // on clear la liste de nos voisins
-		this.neighbours.get(letter).addAll(hSetNeighbours); // on ajoute maintenant les éléments dans la liste principale
-		Collections.sort(this.neighbours.get(letter)); // on ordonne la liste
+		//we create a list of Hashset type with the same content like the precedent
+		//the particularity of Hashset it that it didn't support the duplicates but it function like a linked list
+		//we clear the the precedent list and put the Hashset (wich is the same without duplicates)
+		this.neighbours.get(letter).clear();
+		this.neighbours.get(letter).addAll(hSetNeighbours); 
+		Collections.sort(this.neighbours.get(letter)); //we sort the list
 		String newStateNeighbour ="";
+		//we browse the list and add each element in one string separate by a "."
 		for(String number : this.neighbours.get(letter)) {
 			if(newStateNeighbour != "" || number != "") {
 				newStateNeighbour = newStateNeighbour+number+".";
@@ -119,10 +138,12 @@ public class State {
 	}
 	
     public void removeDuplicates() {
+    	//remove the duplicates in the id of a state
         String result = "";
         for (int i = 0; i < this.getId().length(); i++) {
             if(!result.contains(String.valueOf(this.getId().charAt(i)))||this.getId().charAt(i)=='.') {
-                result += String.valueOf(this.getId().charAt(i));
+            //if the state contains char that isn't already in the string or isn't a "." we add it 
+            	result += String.valueOf(this.getId().charAt(i));
             }
         }
         this.setId(result);

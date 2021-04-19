@@ -187,62 +187,6 @@ public class Automaton {
 		
 		return new_state;
 		
-		
-		
-		
-		
-		
-		/*//System.out.println("stringstates"+stringstates);
-		String[] stringstatesArray = stringstates.split("\\."); //01.23.34 [01., 23. ,34. ] [01, ., 23, .,34,.]
-	    //System.out.println(Arrays.toString(stringstatesArray));
-	    LinkedList<State> list = new LinkedList<State>();
-	    for(String number : stringstatesArray){
-	    	//System.out.println("for : String");
-	    	for(State states : this.getStates()) {
-	    		//System.out.println("for : states");
-	    		if(states.getId()==(number)) {
-	    			list.add(states);
-	    			//System.out.println("On est là"+states.getId());
-	    		}
-	    	}
-	    }
-	    //System.out.println("Affichage de list");
-		/*for(State states1 : list) {
-			System.out.println("Affichage de list for");
-			System.out.println("ID : "+states1.getId());
-			System.out.println("Init : "+states1.isInit());
-			System.out.println("Exit : "+states1.isExit());
-			for(Map.Entry<String, LinkedList<String>> entry : states1.getNeighbours().entrySet()) {
-				System.out.println(entry);
-			}
-		}
-	    
-	    
-	    
-	    State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-	    if(list.size()>0) {
-	    	do {
-				new_state.concat(list.get(0), list.get(1), this.aut_alph);
-				list.addLast(new_state);
-				list.remove(0);
-				list.remove(0);
-			}while(list.size()>1);
-	    }
-		return new_state;
-		
-		*
-		public State StringtoState(String stringstates) {
-		int i = 0;
-		State new_state = new State("", false, false, new HashMap<String, LinkedList<String>>());
-		State new_state2 = new State(new_state);
-		while(i<stringstates.length()) {
-			//System.out.println("Automate :" + this.states.get((int)stringstates.charAt(i)-49).getId()+ this.states.get((int)stringstates.charAt(i)-49).getNeighbours());
-			new_state.concat(new_state2, this.states.get((int)stringstates.charAt(i)-49), aut_alph);
-			i++;
-			new_state2 = new State(new_state);
-		}
-		return new_state;
-	}*/
 	}
 	
 	
