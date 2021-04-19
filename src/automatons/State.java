@@ -7,7 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.Arrays;
 import java.util.Collections;
 
-//salut2 
 public class State {
     private String id;
     private boolean isInit;
@@ -62,7 +61,7 @@ public class State {
 	}
 	
 	public boolean several_transitions(String letter) {
-		//permit to know if a state as several transtion with the same letter 
+		//permit to know if a state has several transition with the same letter 
 		if (neighbours.get(letter).size() > 1) {
 		//if for a letter the size of the string linked list is superior to 1, the state has several transition
 			return true;
@@ -73,9 +72,8 @@ public class State {
 	
 	public void concat(State a, State b, List<String> aut_alph) {
 		//permit to concatenate 2 states
-		//if you have 0 : a->1->4 | b->2 and 1 :a->1->2 
-		//you will have 0.1 : a->1->2->4 | b->2
-		//the state in which we concatenate two strings is supposed to be empty
+		//if you have 0 [a:1->4] | [b:2] and 1[a:1->2] 
+		//you will have 0.1 [a:1->2->4] | [b:2]
 		for(String letter : aut_alph) {
 			//we browse all the letter a state can have
 			if(!this.neighbours.containsKey(letter)) {
@@ -137,7 +135,7 @@ public class State {
 		this.neighbours.get(letter).add(newStateNeighbour);
 	}
 	
-    public void removeDuplicates() {
+    public void removeDuplicates() {//a corriger on split la string en tableau d id et on supprime les id en double
     	//remove the duplicates in the id of a state
         String result = "";
         for (int i = 0; i < this.getId().length(); i++) {

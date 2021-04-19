@@ -43,7 +43,7 @@ public class Automaton {
 	}
 
     public boolean isDeterminist() {
-    	if (several_entries() || several_trans()) {
+       	if (several_entries() || several_trans()) {
     		//System.out.println("L'automate n'est pas deterministe");
     		return false;
     	}
@@ -52,6 +52,7 @@ public class Automaton {
     }
     
     public boolean several_entries() {
+    	//browse every states of an automaton and check if the number of entries is >1
     	int nbEntries = 0;
     	for (State state : states) {
     		if (state.isInit()) {
@@ -65,6 +66,7 @@ public class Automaton {
     }
     
     public LinkedList<State> getEntries(){
+    	//give a linked list with 
     	LinkedList<State> entries_list = new LinkedList<State>();
     	for (State state : states) {
     		if (state.isInit()) {
