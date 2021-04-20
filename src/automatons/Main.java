@@ -14,11 +14,11 @@ public class Main {
 		LinkedList<String> s3_nei_a = new LinkedList<String>();
 		LinkedList<String> s3_nei_b = new LinkedList<String>();
 		//Ajouter les états d'arrivée sous forme de String
-		s0_nei_a.add("0");
-		s0_nei_b.add("0");
+		s0_nei_a.add("10");
 		s0_nei_b.add("10");
-		s1_nei_a.add("2");
-		s2_nei_b.add("3");
+		s0_nei_b.add("1");
+		s1_nei_a.add("32");
+		s2_nei_b.add("23");
 		//Créer les HashMap (Neighbours)
 		HashMap<String, LinkedList<String>> s0_map = new HashMap<String, LinkedList<String>>();
 		HashMap<String, LinkedList<String>> s1_map = new HashMap<String, LinkedList<String>>();
@@ -34,10 +34,10 @@ public class Main {
 		s3_map.put("a", s3_nei_a);
 		s3_map.put("b", s3_nei_b);
 		//Créer les états à l'aide du constructeur en leur donnant le HashMap Neighbours
-		State s0 = new State("0", true, false, s0_map);
-		State s1 = new State("10", false, false, s1_map);
-		State s2 = new State("2", false, false, s2_map);
-		State s3 = new State("3", false, true, s3_map);
+		State s0 = new State("10", true, false, s0_map);
+		State s1 = new State("1", false, false, s1_map);
+		State s2 = new State("32", false, false, s2_map);
+		State s3 = new State("23", false, true, s3_map);
 		
 		LinkedList<State> a_states = new LinkedList<State>();
 		a_states.add(s0);

@@ -1,12 +1,5 @@
 package automatons;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Queue;
+import java.util.*;
 
 public class State {
     private String id;
@@ -110,7 +103,8 @@ public class State {
 		}
 		this.id = a.getId()+"."+b.getId();
 		//concatenate the name of the states with a point in the middle like for 0 and 1 you have 0.1
-		this.removeDuplicates();
+		MyString myStringId = new MyString (getId());
+    	setId(myStringId.removeDuplicates());
 		//if the the two strings has a common name it avoid to have it two times
 		//for exemple if you concatenate 0.1 and 1.2.3 it avoid to have 0.1.1.2.3 but 0.1.2.3
 		this.isInit = false;
@@ -137,34 +131,13 @@ public class State {
 				newStateNeighbour = newStateNeighbour+number+".";
 			}
 		}
-		if(newStateNeighbour.length()>0) {
-			newStateNeighbour = newStateNeighbour.substring(0, newStateNeighbour.length()-1);
-		}
+		MyString myStringNeighbour = new MyString (newStateNeighbour);
+    	newStateNeighbour = myStringNeighbour.removeDuplicates();
 		
 		this.neighbours.get(letter).clear(); // on clear à nouveau la liste de nos voisins
 		this.neighbours.get(letter).add(newStateNeighbour);
 	}
 	
 	
-    public void removeDuplicates() {//a corriger on split la string en tableau d id et on supprime les id en double
-    	//remove the duplicates in the id of a state
-    	String[] IdArray = getId().split("\\.");
-        int size = IdArray.length;
-        int [] IdArrayInteger = new int [size];
-        for(int i=0; i<size; i++) {
-        	IdArrayInteger[i] = Integer.parseInt(IdArray[i]);
-        }
-        Arrays.sort(IdArrayInteger);
-        for (int i = 0; i < IdArrayInteger.length; i++) {
-            IdArray[i] = String.valueOf(IdArrayInteger[i]);
 
-        }
-    	LinkedHashSet<String> hSetId = new LinkedHashSet<String>(Arrays.asList(IdArray));
-    	String result = "";
-        for (String number : hSetId) {
-        	result= result + number + ".";
-        }
-        result = result.substring(0,result.length()-1);
-        this.setId(result);
-    }
 }
