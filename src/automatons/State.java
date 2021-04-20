@@ -6,13 +6,13 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Queue;
 
 public class State {
     private String id;
     private boolean isInit;
     private boolean isExit;
     private HashMap<String, LinkedList<String>> neighbours;
-
 
     
 	public State(final String id, final boolean isInit, final boolean isExit, final HashMap<String, LinkedList<String>> neighbours) {

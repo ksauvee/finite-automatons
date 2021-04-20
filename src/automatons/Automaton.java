@@ -189,10 +189,5 @@ public class Automaton {
 		
 	}
 	
-	
-	public void remove_epsilon(){
-		HashMap<String, LinkedList<String>> closed_epsilon = new HashMap<String, LinkedList<String>>();
-		
-	}
 
 }
