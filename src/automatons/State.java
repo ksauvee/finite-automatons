@@ -134,6 +134,7 @@ public class State {
 		this.neighbours.get(letter).add(newStateNeighbour);
 	}
 	
+	
     public void removeDuplicates() {//a corriger on split la string en tableau d id et on supprime les id en double
     	//remove the duplicates in the id of a state
         String result = "";

@@ -1,5 +1,4 @@
 package automatons;
-//salut2
 import java.util.*;
 
 public class Main {

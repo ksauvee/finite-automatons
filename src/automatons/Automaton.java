@@ -102,7 +102,6 @@ public class Automaton {
     }
     //fonction recuperant les entrées et fonction récupérant les états rendant l'automate non déterministe
     
-    
     public void simplification_aut() {
     	for(State states : getStates()) {
 			for(String letter : aut_alph) {
@@ -112,6 +111,7 @@ public class Automaton {
 			}
 		}
     }
+    
     
     public Automaton det_sync() {
     	if(this.isDeterminist()) {
@@ -168,6 +168,7 @@ public class Automaton {
     	return state_concat;
     }
 
+    
 	public State StringtoState(String stringstates) {
 		String[] stringstatesArray = stringstates.split("\\.");
 		LinkedList<State> list = new LinkedList<State>();
@@ -184,10 +185,6 @@ public class Automaton {
 		}else {
 			new_state = concat_list(list);
 		}
-		
 		return new_state;
-		
 	}
-	
-
 }
