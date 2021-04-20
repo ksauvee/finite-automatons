@@ -14,7 +14,6 @@ public class State {
     private boolean isExit;
     private HashMap<String, LinkedList<String>> neighbours;
 
-    
 	public State(final String id, final boolean isInit, final boolean isExit, final HashMap<String, LinkedList<String>> neighbours) {
 		this.id = id;
 		this.isInit = isInit;
