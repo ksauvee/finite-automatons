@@ -187,4 +187,40 @@ public class Automaton {
 		}
 		return new_state;
 	}
+	
+	public void findEpsilon_transitions(State state){ //we use this function to get the simplified writing of each epsilon closed state
+		LinkedList<State> list = new LinkedList<State>(); // the final epsilon transitions list for the current state
+		list.add(state);
+		if(state.getNeighbours().containsKey("*")) {
+			Queue<String> q = new LinkedList<String>(); // we use a FIFO in order to progress in the Automaton and find all the states where we can go through epsilon transitions
+			q.add(state.getId());
+			q.addAll(state.getNeighbours().get("*"));
+			while(q.size()>0) {
+				State new_state = this.StringtoState(q.remove());
+				if(!list.contains(new_state)) {
+					list.add(new_state);
+				}
+				if(new_state.getNeighbours().containsKey("*")) {
+					q.addAll(new_state.getNeighbours().get("*"));
+				}
+			}
+		}
+		state.setEpsilon_transitions(list);
+
+	}
+	
+	public void remove_epsilon(){
+		/*HashMap<String, LinkedList<String>> closed_epsilon = new HashMap<String, LinkedList<String>>();
+		int i=0;
+		//we create a new Hashmap with the same alphabet without "*"
+		while(i < aut_alph.size()-1) {
+		closed_epsilon.put(aut_alph.get(i), new LinkedList<String>());
+		}
+		for(State states : getStates()) {
+		while
+		}*/
+
+
+
+		}
 }

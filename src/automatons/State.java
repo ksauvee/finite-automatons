@@ -13,12 +13,14 @@ public class State {
     private boolean isInit;
     private boolean isExit;
     private HashMap<String, LinkedList<String>> neighbours;
+    private LinkedList<State> epsilon_transitions;
 
 	public State(final String id, final boolean isInit, final boolean isExit, final HashMap<String, LinkedList<String>> neighbours) {
 		this.id = id;
 		this.isInit = isInit;
 		this.isExit = isExit;
 		this.neighbours = neighbours;
+		this.epsilon_transitions = new LinkedList<State>();
 	}
 
 	public State(State other_state) {
@@ -26,6 +28,7 @@ public class State {
 		this.isInit = other_state.isInit;
 		this.isExit = other_state.isExit;
 		this.neighbours = new HashMap<String, LinkedList<String>>(other_state.neighbours);
+		this.epsilon_transitions = new LinkedList<State>(other_state.epsilon_transitions);
 	}
 	public String getId() {
 		return id;
@@ -59,6 +62,14 @@ public class State {
 		this.neighbours = neighbours;
 	}
 	
+	public LinkedList<State> getEpsilon_transitions() {
+		return epsilon_transitions;
+	}
+
+	public void setEpsilon_transitions(LinkedList<State> epsilon_transitions) {
+		this.epsilon_transitions = epsilon_transitions;
+	}
+
 	public boolean several_transitions(String letter) {
 		//permit to know if a state has several transition with the same letter 
 		if (neighbours.get(letter).size() > 1) {
@@ -137,13 +148,23 @@ public class State {
 	
     public void removeDuplicates() {//a corriger on split la string en tableau d id et on supprime les id en double
     	//remove the duplicates in the id of a state
-        String result = "";
-        for (int i = 0; i < this.getId().length(); i++) {
-            if(!result.contains(String.valueOf(this.getId().charAt(i)))||this.getId().charAt(i)=='.') {
-            //if the state contains char that isn't already in the string or isn't a "." we add it 
-            	result += String.valueOf(this.getId().charAt(i));
-            }
+    	String[] IdArray = getId().split("\\.");
+        int size = IdArray.length;
+        int [] IdArrayInteger = new int [size];
+        for(int i=0; i<size; i++) {
+        	IdArrayInteger[i] = Integer.parseInt(IdArray[i]);
         }
+        Arrays.sort(IdArrayInteger);
+        for (int i = 0; i < IdArrayInteger.length; i++) {
+            IdArray[i] = String.valueOf(IdArrayInteger[i]);
+
+        }
+    	LinkedHashSet<String> hSetId = new LinkedHashSet<String>(Arrays.asList(IdArray));
+    	String result = "";
+        for (String number : hSetId) {
+        	result= result + number + ".";
+        }
+        result = result.substring(0,result.length()-1);
         this.setId(result);
     }
 }
