@@ -186,26 +186,49 @@ public class Automaton {
 	
 	public void findEpsilon_transitions(State state){ //we use this function to get the simplified writing of each epsilon closed state
 		LinkedList<State> list = new LinkedList<State>(); // the final epsilon transitions list for the current state
-		list.add(state);
+		
 		if(state.getNeighbours().containsKey("*")) {
 			Queue<String> q = new LinkedList<String>(); // we use a FIFO in order to progress in the Automaton and find all the states where we can go through epsilon transitions
 			q.add(state.getId());
 			q.addAll(state.getNeighbours().get("*"));
 			while(q.size()>0) {
-				State new_state = this.StringtoState(q.remove());
+				State new_state = this.StringtoState(q.remove()); // we call StringtoState function to get the State that corresponds to each String we have in the Queue
 				if(!list.contains(new_state)) {
-					list.add(new_state);
+					list.add(new_state); // we add all states to the list of epsilon transitions ways from the current state 
+					//list.add(new State(new_state));
 				}
 				if(new_state.getNeighbours().containsKey("*")) {
-					q.addAll(new_state.getNeighbours().get("*"));
+					q.addAll(new_state.getNeighbours().get("*"));  // we add all the epsilon transitions of each state we have in the Automaton
 				}
 			}
 		}
-		state.setEpsilon_transitions(list);
-
+		Collections.sort(list, Comparator    						// For a better comprehension we need to sort the list. We use Comparator interface
+				.comparingInt((State s) -> s.getId().length())		// First we compare the size of all the ID
+				.thenComparing((State s) -> s.getId()));			// Then we compare the value with a classic "alphabetical" sorting
+		
+		int index=0;   			// We want to put the current state at the beginning of the list so we first search for an occurrence of the state in our list
+		boolean test = false;
+		for(int i = 0; i<list.size(); i++) {
+			if(list.get(i).getId().equals(state.getId())) {
+			//if(list.get(i).getId()==state.getId();
+				index = i;
+				test = true;     
+			}
+		}
+		if(test) {   // if we've found an occurrence then we remove the state
+			list.remove(index);
+		}
+		list.addFirst(state);           // we add the state at first position in any case
+		//list.addFirst(new State(state));
+		state.setEpsilon_transitions(list);  // we directly change the value of epsilon_transition's list in the given state
+		//state.setId(state.getId()+"'");    DECOMMENTE CA ET REGARDE LE GROOOS PROBLEME  -> copie défensive marche pas cf lignes 198/222  -> .equals est pas le problème cf ligne 213
 	}
 	
 	public void remove_epsilon(){
+		
+		
+		
+		
 		/*HashMap<String, LinkedList<String>> closed_epsilon = new HashMap<String, LinkedList<String>>();
 		int i=0;
 		//we create a new Hashmap with the same alphabet without "*"
