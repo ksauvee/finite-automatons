@@ -184,9 +184,9 @@ public class Automaton {
 		return new_state;
 	}
 	
-	public void findEpsilon_transitions(State state){ //we use this function to get the simplified writing of each epsilon closed state
+	public State findEpsilon_transitions(State state){ //we use this function to get the simplified writing of each epsilon closed state
 		LinkedList<State> list = new LinkedList<State>(); // the final epsilon transitions list for the current state
-		
+		list.addFirst(state);
 		if(state.getNeighbours().containsKey("*")) {
 			Queue<String> q = new LinkedList<String>(); // we use a FIFO in order to progress in the Automaton and find all the states where we can go through epsilon transitions
 			q.add(state.getId());
@@ -220,11 +220,43 @@ public class Automaton {
 		}
 		list.addFirst(state);           // we add the state at first position in any case
 		//list.addFirst(new State(state));
-		state.setEpsilon_transitions(list);  // we directly change the value of epsilon_transition's list in the given state
-		//state.setId(state.getId()+"'");    DECOMMENTE CA ET REGARDE LE GROOOS PROBLEME  -> copie défensive marche pas cf lignes 198/222  -> .equals est pas le problème cf ligne 213
+		State returning_state = new State(state);
+		returning_state.setId(state.getId()+"'");
+		returning_state.setEpsilon_transitions(list);  // we directly change the value of epsilon_transition's list in the given state
+		//state.setId(state.getId()+"'");
+		return returning_state;
 	}
 	
-	public void remove_epsilon(){
+	public Automaton synchronize_automaton(){ // THis function will use the simplified writing of each state to remove epsilon transitions in an automaton
+		Automaton synchronized_a = new Automaton(new LinkedList<State>(), true, S_ALPH);
+		for(int i = 0; i<getStates().size(); i++) {   // For all states in the given Automaton, we find the non-epsilon transitions
+			synchronized_a.getStates().add(findEpsilon_transitions(getStates().get(i)));
+			for(String letter : aut_alph) {
+				if(synchronized_a.getStates().get(i).getNeighbours().containsKey(letter)) {
+					for(int j = 0; j< synchronized_a.getStates().get(i).getNeighbours().get(letter).size();j++) {
+						String number = synchronized_a.getStates().get(i).getNeighbours().get(letter).get(j);
+						number+="'";
+						synchronized_a.getStates().get(i).getNeighbours().get(letter).set(j,number);
+					}
+				}
+			}
+		}
+		//Now we have the complete Automaton with only non-epsilon transitions and the list of states accessible by epsilon transitions from each state in this Automaton
+		for(State states : synchronized_a.getStates()) {
+			for(State epsilon_states : states.getEpsilon_transitions()) {
+				for(String key : synchronized_a.aut_alph) {
+					states.getNeighbours().get(key).addAll(epsilon_states.getNeighbours().get(key));
+				}
+			}
+		}
+		for(State states : synchronized_a.getStates()) {
+			for(String letter : synchronized_a.aut_alph) {
+				LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<String>(states.getNeighbours().get(letter));
+				states.getNeighbours().get(letter).clear();
+				states.getNeighbours().get(letter).addAll(hSetNeighbours);
+			}
+		}
+		return synchronized_a;
 		
 		
 		

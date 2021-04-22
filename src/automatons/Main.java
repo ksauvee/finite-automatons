@@ -380,12 +380,35 @@ public class Main {
 		HashMap<String, LinkedList<String>> s14_map = new HashMap<String, LinkedList<String>>();
 		//Ajouter une entrée ayant pour clé la lettre et pour valeur la liste d'états d'arrivée précédemment créée
 		s0_map.put("a", s0_nei_a);
+		s0_map.put("b", s0_nei_b);
+		s1_map.put("a", s1_nei_a);
+		s1_map.put("b", s1_nei_b);
+		s2_map.put("a", s2_nei_a);
 		s2_map.put("b", s2_nei_b);
-		s6_map.put("b",s6_nei_b);
-		s7_map.put("a",s7_nei_a);
-		s9_map.put("a",s9_nei_a);
-		s10_map.put("b",s10_nei_b);
-		s13_map.put("b",s13_nei_b);
+		s3_map.put("a", s3_nei_a);
+		s3_map.put("b", s3_nei_b);
+		s4_map.put("a", s4_nei_a);
+		s4_map.put("b", s4_nei_b);
+		s5_map.put("a", s5_nei_a);
+		s5_map.put("b", s5_nei_b);
+		s6_map.put("a", s6_nei_a);
+		s6_map.put("b", s6_nei_b);
+		s7_map.put("a", s7_nei_a);
+		s7_map.put("b", s7_nei_b);
+		s8_map.put("a", s8_nei_a);
+		s8_map.put("b", s8_nei_b);
+		s9_map.put("a", s9_nei_a);
+		s9_map.put("b", s9_nei_b);
+		s10_map.put("a", s10_nei_a);
+		s10_map.put("b", s10_nei_b);
+		s11_map.put("a", s11_nei_a);
+		s11_map.put("b", s11_nei_b);
+		s12_map.put("a", s12_nei_a);
+		s12_map.put("b", s12_nei_b);
+		s13_map.put("a", s13_nei_a);
+		s13_map.put("b", s13_nei_b);
+		s14_map.put("a", s14_nei_a);
+		s14_map.put("b", s14_nei_b);
 		
 		s1_map.put("*", s1_nei_epsilon);
 		s3_map.put("*", s3_nei_epsilon);
@@ -431,15 +454,11 @@ public class Main {
 		//Construire l'automate avec son constructeur (synchrone ou non ?, la taille de son alphabet" et la liste des états construite)
 		Automaton a = new Automaton(a_states, true, 2);
 		//Afficher Automate de départ
-		System.out.println("Automate de départ");
+		//System.out.println("Automate de départ");
 		affichage(a);
-		for(State states_eps : a.getStates()) {
-			a.findEpsilon_transitions(states_eps);
-			for(State states : states_eps.getEpsilon_transitions()) {
-				System.out.print(states.getId()+".");
-			}
-			System.out.println();
-		}
+		System.out.println("Automate déterminisé");
+		//System.out.println("alphabet: "+a.aut_alph.toString());
+		affichage(a.synchronize_automaton().det_sync());
 		
 	}
 	public static void affichage(Automaton a) {
@@ -449,6 +468,13 @@ public class Main {
 			System.out.println("Exit : "+states.isExit());
 			for(Map.Entry<String, LinkedList<String>> entry : states.getNeighbours().entrySet()) {
 				System.out.println(entry);
+			}
+			if(states.getEpsilon_transitions().size()>0) {
+				System.out.print("Epsilon transitions : ");
+				for(State epsilon_states : states.getEpsilon_transitions()) {
+					System.out.print(epsilon_states.getId()+".");
+				}
+				System.out.println();
 			}
 			System.out.println("             fin Etat "+states.getId()+"\n\n");
 		}

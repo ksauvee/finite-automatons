@@ -20,7 +20,13 @@ public class State {
 		this.id = other_state.id;
 		this.isInit = other_state.isInit;
 		this.isExit = other_state.isExit;
-		this.neighbours = new HashMap<String, LinkedList<String>>(other_state.neighbours);
+		if(other_state.getNeighbours().containsKey("*")) {
+			HashMap<String, LinkedList<String>> neighbours_epsilon_free = new HashMap<String, LinkedList<String>>(other_state.getNeighbours());
+			neighbours_epsilon_free.remove("*");
+			this.setNeighbours(neighbours_epsilon_free);
+		}else {
+			this.setNeighbours(other_state.getNeighbours());
+		}
 		this.epsilon_transitions = new LinkedList<State>(other_state.epsilon_transitions);
 	}
 	public String getId() {
