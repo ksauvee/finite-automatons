@@ -25,22 +25,7 @@ public class MyString{
 		for(String number : array) {
 			list.add(number);
 		}
-		/*LinkedList<Integer> list = new LinkedList<Integer>();
-		for(int i = 0 ; i<array.length ; i++) {
-			if(array[i] != "") {
-        		list.add(Integer.parseInt(array[i]));
-        	}
-		}
-		Collections.sort(list);
-		LinkedHashSet<String> listHSet = new LinkedHashSet<String>();
-		for(Integer number : list) {
-			listHSet.add(String.valueOf(number));
-		}*/
 		Collections.sort(list, Comparator.comparingInt((String s) -> s.length()).thenComparing((String s) -> s));    						
-				
-				
-				
-				// For a better comprehension we need to sort the list. We use Comparator interface		// First we compare the size of all the ID
     	String result = "";
         for (String number : list) {
         	result += number + ".";

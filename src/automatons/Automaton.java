@@ -227,7 +227,7 @@ public class Automaton {
 		return returning_state;
 	}
 	
-	public Automaton synchronize_automaton(){ // THis function will use the simplified writing of each state to remove epsilon transitions in an automaton
+	public Automaton det_async(boolean print){ // THis function will use the simplified writing of each state to remove epsilon transitions in an automaton
 		Automaton synchronized_a = new Automaton(new LinkedList<State>(), true, S_ALPH);
 		for(int i = 0; i<getStates().size(); i++) {   // For all states in the given Automaton, we find the non-epsilon transitions
 			synchronized_a.getStates().add(findEpsilon_transitions(getStates().get(i)));
@@ -256,7 +256,12 @@ public class Automaton {
 				states.getNeighbours().get(letter).addAll(hSetNeighbours);
 			}
 		}
-		return synchronized_a;
+		if(print) {
+			for(State states : synchronized_a.getStates()) {
+				states.print_closed_epsilon();
+			}
+		}
+		return synchronized_a.det_sync();
 		
 		
 		

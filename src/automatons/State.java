@@ -77,7 +77,17 @@ public class State {
 		}
 		return false;
 	}
-
+	
+	public void print_closed_epsilon() {
+		System.out.println("Closed epsilon of "+getId()+" : ");
+		int i=0;
+		while(i<getEpsilon_transitions().size()-1) {
+			System.out.print(getEpsilon_transitions().get(i).getId()+".");
+			i++;
+		}
+		System.out.print(getEpsilon_transitions().getLast().getId());
+		System.out.println();
+	}
 	
 	public void concat(State a, State b, List<String> aut_alph) {
 		//permit to concatenate 2 states

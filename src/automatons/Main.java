@@ -458,7 +458,7 @@ public class Main {
 		affichage(a);
 		System.out.println("Automate déterminisé");
 		//System.out.println("alphabet: "+a.aut_alph.toString());
-		affichage(a.synchronize_automaton().det_sync());
+		affichage(a.det_async(false));
 		
 	}
 	public static void affichage(Automaton a) {
@@ -468,13 +468,6 @@ public class Main {
 			System.out.println("Exit : "+states.isExit());
 			for(Map.Entry<String, LinkedList<String>> entry : states.getNeighbours().entrySet()) {
 				System.out.println(entry);
-			}
-			if(states.getEpsilon_transitions().size()>0) {
-				System.out.print("Epsilon transitions : ");
-				for(State epsilon_states : states.getEpsilon_transitions()) {
-					System.out.print(epsilon_states.getId()+".");
-				}
-				System.out.println();
 			}
 			System.out.println("             fin Etat "+states.getId()+"\n\n");
 		}
