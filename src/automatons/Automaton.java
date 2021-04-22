@@ -2,7 +2,7 @@ package automatons;
 import java.util.*;
 
 public class Automaton {
-    //private int nbStates; a.states.size() renvoie la taille de la liste d'�tats directement salut
+    private int nbStates;
     private LinkedList<State> states;
     protected boolean SYNC;
     protected int S_ALPH=2; // [1;26] et si mot vide [1;27]
@@ -12,7 +12,7 @@ public class Automaton {
     
     public Automaton(LinkedList<State> states, boolean sync, int s_alph) {
 		super();
-		//this.nbStates = nbStates;
+		this.nbStates = states.size();
 		this.states = states;
 		this.SYNC = sync;
 		this.S_ALPH = s_alph;
@@ -21,13 +21,13 @@ public class Automaton {
 		}
 	}
 
-	/*public int getNbStates() {
+	public int getNbStates() {
 		return nbStates;
 	}
 
 	public void setNbStates(int nbStates) {
 		this.nbStates = nbStates;
-	}*/
+	}
 
 	public LinkedList<State> getStates() {
 		return states;
