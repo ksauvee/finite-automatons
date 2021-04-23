@@ -54,7 +54,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.det_sync();
+        Automaton b = a.detSync();
         affichage(b);
     }
     public static void TestB() {
@@ -105,7 +105,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.det_sync();
+        Automaton b = a.detSync();
         affichage(b);
     }
     public static void TestC() {
@@ -154,7 +154,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.det_sync();
+        Automaton b = a.detSync();
         affichage(b);
     }
     public static void TestC2() {
@@ -200,7 +200,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.det_sync();
+        Automaton b = a.detSync();
         affichage(b);
     }
     public static void TestC3() {
@@ -246,7 +246,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.det_sync();
+        Automaton b = a.detSync();
         affichage(b);
     }
     public static void TestD() {
@@ -292,7 +292,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.det_sync();
+        Automaton b = a.detSync();
         System.out.println("Nouvel Automate");
         affichage(b);
     }
@@ -461,7 +461,7 @@ public class Main {
         affichage(a);
         System.out.println("Automate déterminisé");
         //System.out.println("alphabet: "+a.aut_alph.toString());
-        affichage(a.det_async(false));
+        affichage(a.detAsync(false));
 
     }
     public static void affichage(Automaton a) {
