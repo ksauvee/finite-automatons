@@ -453,7 +453,7 @@ public class Automaton {
         list.addFirst(state); // we add the state at first position in any case
         State returningState = new State(state);
         returningState.setId(state.getId()+"'");
-        returningState.setEpsilon_transitions(list);  // we directly change the value of epsilon_transition's list in the given state
+        returningState.setEpsilonTransitions(list);  // we directly change the value of epsilon_transition's list in the given state
         return returningState;
     }
 
@@ -474,7 +474,7 @@ public class Automaton {
         }
         //Now we have the complete Automaton with only non-epsilon transitions and the list of states accessible by epsilon transitions from each state in this Automaton
         for (State states : synchronizedA.getStates()) {
-            for (State epsilon_states : states.getEpsilon_transitions()) {
+            for (State epsilon_states : states.getEpsilonTransitions()) {
                 for (String key : synchronizedA.autAlph) {
                     states.getNeighbours().get(key).addAll(epsilon_states.getNeighbours().get(key));
                 }
