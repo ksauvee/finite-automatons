@@ -1,4 +1,17 @@
-.idea/
-out/
+# Build output directies #
+##########################
+/target
+*/target
+/build
+*/build
+
+# IntelliJ specific files/directories #
+#######################################
+out
+.idea
+*.iml
+
+# Eclipse specific files/directories #
+######################################
 .classpath
 .project
