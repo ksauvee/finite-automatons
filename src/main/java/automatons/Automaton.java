@@ -461,7 +461,9 @@ public class Automaton {
         Automaton synchronizedA = new Automaton(new LinkedList<>(), true, nbAlphabetSymbols);
 
         for(int i = 0; i < getStates().size(); i++) {   // For all states in the given Automaton, we find the non-epsilon transitions
-            synchronizedA.getStates().add(findEpsilonTransitions(getStates().get(i)));
+            LinkedList<State> newStates = synchronizedA.getStates();
+            newStates.add(findEpsilonTransitions(getStates().get(i)));
+            synchronizedA.setStates(newStates);
             for (String letter : autAlph) {
                 if (synchronizedA.getStates().get(i).getNeighbours().containsKey(letter)) {
                     for (int j = 0; j < synchronizedA.getStates().get(i).getNeighbours().get(letter).size(); j++) {
