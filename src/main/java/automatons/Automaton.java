@@ -31,7 +31,13 @@ public class Automaton {
     }
 
     public LinkedList<State> getStates() {
-        return states;
+        LinkedList<State> newStates = new LinkedList<>();
+
+        for (State state : states) {
+            newStates.add(new State(state));
+        }
+
+        return newStates;
     }
 
     public void setStates(LinkedList<State> states) {
@@ -66,7 +72,7 @@ public class Automaton {
         LinkedList<State> entries_list = new LinkedList<State>();
         for (State state : states) {
             if (state.isInit()) {
-                entries_list.add(state);
+                entries_list.add(new State(state));
             }
         }
         return entries_list;
@@ -120,7 +126,9 @@ public class Automaton {
                 a.getStates().add(concat_list(getEntries()));
                 a.getStates().get(0).setInit(true);
             }else {
-                a.getStates().add(getEntries().get(0));
+                LinkedList<State> newStates = a.getStates();
+                newStates.add(getEntries().get(0));
+                a.setStates(newStates);
             }
             LinkedList<State> clone_list = new LinkedList<State>();
             boolean modif = false;
@@ -144,7 +152,9 @@ public class Automaton {
                         }
                     }
                     if(add && state.getId()!= "") {
-                        a.getStates().add(state);
+                        LinkedList<State> states = a.getStates();
+                        states.add(state);
+                        a.setStates(states);
                         modif = true;
                     }
                 }

@@ -104,6 +104,7 @@ public class Main {
         System.out.println("Automate de départ");
         affichage(a);
         Automaton b = a.det_sync();
+        System.out.println("test");
         affichage(b);
     }
     public static void TestC() {
