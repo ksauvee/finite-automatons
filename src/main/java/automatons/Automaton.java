@@ -1,25 +1,102 @@
 package automatons;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Automaton {
+    private final int nbAlphabetSymbols;
     private int nbStates;
     private LinkedList<State> states;
-    protected boolean SYNC;
-    protected final int S_ALPH; // [1;26] et si mot vide [1;27]
-    protected final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
-    protected final List<String> aut_alph;
+    private int nbInitStates;
+    private int nbExitStates;
+    private int nbTransitions;
+    private boolean sync;
+    private final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
+    private final List<String> autAlph;
 
 
     public Automaton(LinkedList<State> states, boolean sync, int s_alph) {
         super();
         this.nbStates = states.size();
         this.states = states;
-        this.SYNC = sync;
-        this.S_ALPH = s_alph;
-        this.aut_alph = alphabet.subList(0, S_ALPH);
+        this.sync = sync;
+        this.nbAlphabetSymbols = s_alph;
+        this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
+
         if(!sync) {
-            this.aut_alph.add("*");
+            this.autAlph.set(nbAlphabetSymbols-1, "*");
         }
+    }
+
+    public Automaton(final LinkedList<String> automatonCharacteristics) {
+        // automatons characteristics are stored in String so we convert to Integer to initialize attributes
+        nbAlphabetSymbols = Integer.parseInt(automatonCharacteristics.get(0));
+        nbStates = Integer.parseInt(automatonCharacteristics.get(1));
+        states = new LinkedList<>();
+
+        for (int i = 0; i < nbStates; ++i) {
+            State newState = new State(String.valueOf(i));
+            states.add(newState);
+        }
+
+        /* the init and exit states are stored in format : nbStates state1 state2 ...
+        so we split by whitespace to get only the ids
+         */
+        String[] initStates = automatonCharacteristics.get(2).split("\\s");
+        nbInitStates = Integer.parseInt(initStates[0]);
+
+        for (int i = 1; i < nbInitStates + 1; ++i) {
+            String stateId = initStates[i];
+            states.get(Integer.parseInt(stateId)).setIsInit(true);
+        }
+
+        String[] exitStates = automatonCharacteristics.get(3).split("\\s");
+        nbExitStates = Integer.parseInt(exitStates[0]);
+
+        for (int i = 1; i < nbExitStates + 1; ++i) {
+            String stateId = exitStates[i];
+            states.get(Integer.parseInt(stateId)).setIsExit(true);
+        }
+
+        nbTransitions = Integer.parseInt(automatonCharacteristics.get(4));
+        sync = true;
+
+        for (int i = 0; i < nbTransitions; ++i) {
+            String initialState = String.valueOf(automatonCharacteristics.get(5+i).charAt(0));
+            String symbol = String.valueOf(automatonCharacteristics.get(5+i).charAt(1));
+            String arrivalState = String.valueOf(automatonCharacteristics.get(5+i).charAt(2));
+
+            if (symbol.equals("*")) {
+                sync = false;
+            }
+
+            states.get(Integer.parseInt(initialState)).addNeighbour(symbol, arrivalState);
+        }
+
+        this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
+        if(!sync) {
+            this.autAlph.set(nbAlphabetSymbols-1, "*");
+        }
+    }
+
+    public static LinkedList<String> readAutomatonOnFile(final String filename) {
+        LinkedList<String> automatonInformations = new LinkedList<>();
+        try {
+            File automatonInformation = new File(filename);
+            Scanner reader = new Scanner(automatonInformation);
+
+            while (reader.hasNextLine()) {
+                String data = reader.nextLine();
+                automatonInformations.add(data);
+            }
+
+            reader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error : File Not Found");
+            e.printStackTrace();
+        }
+
+        return automatonInformations;
     }
 
     public int getNbStates() {
@@ -107,7 +184,7 @@ public class Automaton {
 
     public void simplification_aut() {
         for(State states : getStates()) {
-            for(String letter : aut_alph) {
+            for(String letter : autAlph) {
                 if(states.getNeighbours().containsKey(letter)) {
                     states.simplification(letter);
                 }
@@ -121,10 +198,12 @@ public class Automaton {
             return this;
         }else {
             simplification_aut();
-            Automaton a = new Automaton(new LinkedList<State>(), true, this.S_ALPH);
+            Automaton a = new Automaton(new LinkedList<State>(), true, this.nbAlphabetSymbols);
             if(this.several_entries()) {
-                a.getStates().add(concat_list(getEntries()));
-                a.getStates().get(0).setInit(true);
+                LinkedList<State> newStates = a.getStates();
+                newStates.add(concat_list(getEntries()));
+                newStates.get(0).setIsInit(true);
+                a.setStates(newStates);
             }else {
                 LinkedList<State> newStates = a.getStates();
                 newStates.add(getEntries().get(0));
@@ -135,7 +214,7 @@ public class Automaton {
             do {
                 modif = false;
                 for(State state : a.getStates()) {
-                    for(String letter : aut_alph) {
+                    for(String letter : autAlph) {
                         if(state.getNeighbours().containsKey(letter)) {
                             State new_state = this.StringtoState(state.getNeighbours().get(letter).get(0));
                             //new_state.removeDuplicates();
@@ -167,7 +246,7 @@ public class Automaton {
     public State concat_list(LinkedList<State> list) {
         State state_concat = new State("", false, false, new HashMap<String, LinkedList<String>>());
         while(list.size()>1) {
-            state_concat.concat(list.get(0), list.get(1), aut_alph);
+            state_concat.concat(list.get(0), list.get(1), autAlph);
             list.remove(0);
             list.remove(0);
             list.addFirst(state_concat);
@@ -239,10 +318,10 @@ public class Automaton {
     }
 
     public Automaton det_async(boolean print){ // THis function will use the simplified writing of each state to remove epsilon transitions in an automaton
-        Automaton synchronized_a = new Automaton(new LinkedList<State>(), true, S_ALPH);
+        Automaton synchronized_a = new Automaton(new LinkedList<State>(), true, nbAlphabetSymbols);
         for(int i = 0; i<getStates().size(); i++) {   // For all states in the given Automaton, we find the non-epsilon transitions
             synchronized_a.getStates().add(findEpsilon_transitions(getStates().get(i)));
-            for(String letter : aut_alph) {
+            for(String letter : autAlph) {
                 if(synchronized_a.getStates().get(i).getNeighbours().containsKey(letter)) {
                     for(int j = 0; j< synchronized_a.getStates().get(i).getNeighbours().get(letter).size();j++) {
                         String number = synchronized_a.getStates().get(i).getNeighbours().get(letter).get(j);
@@ -255,13 +334,13 @@ public class Automaton {
         //Now we have the complete Automaton with only non-epsilon transitions and the list of states accessible by epsilon transitions from each state in this Automaton
         for(State states : synchronized_a.getStates()) {
             for(State epsilon_states : states.getEpsilon_transitions()) {
-                for(String key : synchronized_a.aut_alph) {
+                for(String key : synchronized_a.autAlph) {
                     states.getNeighbours().get(key).addAll(epsilon_states.getNeighbours().get(key));
                 }
             }
         }
         for(State states : synchronized_a.getStates()) {
-            for(String letter : synchronized_a.aut_alph) {
+            for(String letter : synchronized_a.autAlph) {
                 LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<String>(states.getNeighbours().get(letter));
                 states.getNeighbours().get(letter).clear();
                 states.getNeighbours().get(letter).addAll(hSetNeighbours);

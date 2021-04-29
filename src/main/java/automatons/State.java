@@ -8,6 +8,12 @@ public class State {
     private HashMap<String, LinkedList<String>> neighbours;
     private LinkedList<State> epsilon_transitions;
 
+    public State(String id) {
+        this.id = id;
+        neighbours = new HashMap<>();
+        epsilon_transitions = new LinkedList<>();
+    }
+
     public State(final String id, final boolean isInit, final boolean isExit, final HashMap<String, LinkedList<String>> neighbours) {
         this.id = id;
         this.isInit = isInit;
@@ -41,7 +47,7 @@ public class State {
         return isInit;
     }
 
-    public void setInit(boolean isInit) {
+    public void setIsInit(boolean isInit) {
         this.isInit = isInit;
     }
 
@@ -49,7 +55,7 @@ public class State {
         return isExit;
     }
 
-    public void setExit(boolean isExit) {
+    public void setIsExit(boolean isExit) {
         this.isExit = isExit;
     }
 
@@ -59,6 +65,19 @@ public class State {
 
     public void setNeighbours(HashMap<String, LinkedList<String>> neighbours) {
         this.neighbours = neighbours;
+    }
+
+    public void addNeighbour(final String symbol, final String arrivalState) {
+        LinkedList<String> letterTransitions = neighbours.get(symbol);
+
+        if (letterTransitions == null) {
+            LinkedList<String> newTransition = new LinkedList<>();
+            newTransition.add(arrivalState);
+            neighbours.put(symbol, newTransition);
+        } else if (!letterTransitions.contains(arrivalState)) {
+            // we check the transition doesn't exist in order to avoid duplicates
+            letterTransitions.add(arrivalState);
+        }
     }
 
     public LinkedList<State> getEpsilon_transitions() {
