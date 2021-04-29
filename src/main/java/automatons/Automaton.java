@@ -7,20 +7,22 @@ public class Automaton {
     private final int nbAlphabetSymbols;
     private int nbStates;
     private LinkedList<State> states;
-    private int nbInitStates;
-    private int nbExitStates;
-    private int nbTransitions;
+    private final int nbInitStates;
+    private final int nbExitStates;
+    private final int nbTransitions;
     private boolean sync;
     private final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
     private final List<String> autAlph;
 
 
-    public Automaton(LinkedList<State> states, boolean sync, int s_alph) {
-        super();
+    public Automaton(LinkedList<State> states, boolean sync, int nbAlphabetSymbols) {
         this.nbStates = states.size();
         this.states = states;
+        this.nbInitStates = 0;
+        this.nbExitStates = 0;
+        this.nbTransitions = 0;
         this.sync = sync;
-        this.nbAlphabetSymbols = s_alph;
+        this.nbAlphabetSymbols = nbAlphabetSymbols;
         this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
 
         if(!sync) {
@@ -122,15 +124,10 @@ public class Automaton {
     }
 
     public boolean isDeterminist() {
-        if (several_entries() || several_trans()) {
-            //System.out.println("L'automate n'est pas deterministe");
-            return false;
-        }
-        //System.out.println("L'automate est deterministe");
-        return true;
+        return !severalEntries() && !severalTransitions();
     }
 
-    public boolean several_entries() {
+    public boolean severalEntries() {
         //browse every states of an automaton and check if the number of entries is >1
         int nbEntries = 0;
         for (State state : states) {
@@ -146,20 +143,20 @@ public class Automaton {
 
     public LinkedList<State> getEntries(){
         //give a linked list with
-        LinkedList<State> entries_list = new LinkedList<State>();
+        LinkedList<State> entries = new LinkedList<>();
         for (State state : states) {
             if (state.isInit()) {
-                entries_list.add(new State(state));
+                entries.add(new State(state));
             }
         }
-        return entries_list;
+        return entries;
     }
 
-    public boolean several_trans() {
+    public boolean severalTransitions() {
         for (State state : states) {
             HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
             for (String letter : neighbours.keySet()) {
-                if (state.several_transitions(letter)) {
+                if (state.severalTransitions(letter)) {
                     return true;
                 }
             }
@@ -169,23 +166,23 @@ public class Automaton {
 
 
     public LinkedList<State> getSeveralTrans(){
-        LinkedList<State> several_trans_list = new LinkedList<State>(null);
+        LinkedList<State> severalTransitionsList = new LinkedList<>();
         for (State state : states) {
             HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
             for (String letter : neighbours.keySet()) {
                 if (neighbours.get(letter).size() > 1) {
-                    several_trans_list.add(state);
+                    severalTransitionsList.add(state);
                 }
             }
         }
-        return several_trans_list;
+        return severalTransitionsList;
     }
     //fonction recuperant les entrées et fonction récupérant les états rendant l'automate non déterministe
 
-    public void simplification_aut() {
-        for(State states : getStates()) {
-            for(String letter : autAlph) {
-                if(states.getNeighbours().containsKey(letter)) {
+    public void automatonSimplification() {
+        for (State states : getStates()) {
+            for (String letter : autAlph) {
+                if (states.getNeighbours().containsKey(letter)) {
                     states.simplification(letter);
                 }
             }
@@ -193,164 +190,174 @@ public class Automaton {
     }
 
 
-    public Automaton det_sync() {
-        if(this.isDeterminist()) {
+    public Automaton determinisationSync() {
+        if (isDeterminist()) {
             return this;
-        }else {
-            simplification_aut();
-            Automaton a = new Automaton(new LinkedList<State>(), true, this.nbAlphabetSymbols);
-            if(this.several_entries()) {
-                LinkedList<State> newStates = a.getStates();
-                newStates.add(concat_list(getEntries()));
+        } else {
+            automatonSimplification();
+            Automaton deterministicAutomaton = new Automaton(new LinkedList<>(), true, nbAlphabetSymbols);
+
+            if (severalEntries()) {
+                LinkedList<State> newStates = deterministicAutomaton.getStates();
+                newStates.add(concatList(getEntries()));
                 newStates.get(0).setIsInit(true);
-                a.setStates(newStates);
-            }else {
-                LinkedList<State> newStates = a.getStates();
+                deterministicAutomaton.setStates(newStates);
+            } else {
+                LinkedList<State> newStates = deterministicAutomaton.getStates();
                 newStates.add(getEntries().get(0));
-                a.setStates(newStates);
+                deterministicAutomaton.setStates(newStates);
             }
-            LinkedList<State> clone_list = new LinkedList<State>();
-            boolean modif = false;
+
+            LinkedList<State> cloneList = new LinkedList<>();
+            boolean modification;
             do {
-                modif = false;
-                for(State state : a.getStates()) {
-                    for(String letter : autAlph) {
-                        if(state.getNeighbours().containsKey(letter)) {
-                            State new_state = this.StringtoState(state.getNeighbours().get(letter).get(0));
-                            //new_state.removeDuplicates();
-                            clone_list.add(new_state);
+                modification = false;
+                for (State state : deterministicAutomaton.getStates()) {
+                    for (String letter : autAlph) {
+                        if (state.getNeighbours().containsKey(letter)) {
+                            State newState = StringtoState(state.getNeighbours().get(letter).get(0));
+                            cloneList.add(newState);
                         }
                     }
                 }
-                boolean add = true;
-                for(State state : clone_list) {
+
+                boolean add;
+                for (State state : cloneList) {
                     add = true;
-                    for(State state2 : a.getStates()) {
-                        if(state.getId().equals(state2.getId())) {
+                    for (State state2 : deterministicAutomaton.getStates()) {
+                        if (state.getId().equals(state2.getId())) {
                             add = false;
+                            break;
                         }
                     }
-                    if(add && state.getId()!= "") {
-                        LinkedList<State> states = a.getStates();
+                    if (add && !state.getId().equals("")) {
+                        LinkedList<State> states = deterministicAutomaton.getStates();
                         states.add(state);
-                        a.setStates(states);
-                        modif = true;
+                        deterministicAutomaton.setStates(states);
+                        modification = true;
                     }
                 }
-                clone_list.clear();
-            }while(modif);
-            return a;
+                cloneList.clear();
+            } while(modification);
+
+            return deterministicAutomaton;
         }
     }
 
-    public State concat_list(LinkedList<State> list) {
-        State state_concat = new State("", false, false, new HashMap<String, LinkedList<String>>());
-        while(list.size()>1) {
-            state_concat.concat(list.get(0), list.get(1), autAlph);
+    public State concatList(LinkedList<State> list) {
+        State stateConcat = new State("", false, false, new HashMap<>());
+
+        while (list.size() > 1) {
+            stateConcat.concat(list.get(0), list.get(1), autAlph);
             list.remove(0);
             list.remove(0);
-            list.addFirst(state_concat);
+            list.addFirst(stateConcat);
         }
-        return state_concat;
+
+        return stateConcat;
     }
 
 
-    public State StringtoState(String stringstates) {
-        String[] stringstatesArray = stringstates.split("\\.");
-        LinkedList<State> list = new LinkedList<State>();
-        for(String index : stringstatesArray) {
-            for(State states : this.getStates()) {
-                if(index.equals(states.getId())) {
+    public State StringtoState(String stringStates) {
+        String[] stringStatesArray = stringStates.split("\\.");
+        LinkedList<State> list = new LinkedList<>();
+        for (String index : stringStatesArray) {
+            for (State states : getStates()) {
+                if (index.equals(states.getId())) {
                     list.add(states);
                 }
             }
         }
-        State new_state;
-        if(list.size()==1) {
-            new_state = list.get(0);
+
+        State newState;
+        if(list.size() == 1) {
+            newState = list.get(0);
         }else {
-            new_state = concat_list(list);
+            newState = concatList(list);
         }
-        return new_state;
+
+        return newState;
     }
 
     public State findEpsilon_transitions(State state){ //we use this function to get the simplified writing of each epsilon closed state
-        LinkedList<State> list = new LinkedList<State>(); // the final epsilon transitions list for the current state
+        LinkedList<State> list = new LinkedList<>(); // the final epsilon transitions list for the current state
         list.addFirst(state);
-        if(state.getNeighbours().containsKey("*")) {
-            Queue<String> q = new LinkedList<String>(); // we use a FIFO in order to progress in the Automaton and find all the states where we can go through epsilon transitions
+
+        if (state.getNeighbours().containsKey("*")) {
+            Queue<String> q = new LinkedList<>(); // we use a FIFO in order to progress in the Automaton and find all the states where we can go through epsilon transitions
             q.add(state.getId());
             q.addAll(state.getNeighbours().get("*"));
-            while(q.size()>0) {
-                State new_state = this.StringtoState(q.remove()); // we call StringtoState function to get the State that corresponds to each String we have in the Queue
-                if(!list.contains(new_state)) {
-                    list.add(new_state); // we add all states to the list of epsilon transitions ways from the current state
-                    //list.add(new State(new_state));
+
+            while (q.size() > 0) {
+                State newState = StringtoState(q.remove()); // we call StringtoState function to get the State that corresponds to each String we have in the Queue
+                if (!list.contains(newState)) {
+                    list.add(newState); // we add all states to the list of epsilon transitions ways from the current state
                 }
-                if(new_state.getNeighbours().containsKey("*")) {
-                    q.addAll(new_state.getNeighbours().get("*"));  // we add all the epsilon transitions of each state we have in the Automaton
+                if (newState.getNeighbours().containsKey("*")) {
+                    q.addAll(newState.getNeighbours().get("*"));  // we add all the epsilon transitions of each state we have in the Automaton
                 }
             }
         }
-        Collections.sort(list, Comparator    						// For a better comprehension we need to sort the list. We use Comparator interface
-                .comparingInt((State s) -> s.getId().length())		// First we compare the size of all the ID
-                .thenComparing((State s) -> s.getId()));			// Then we compare the value with a classic "alphabetical" sorting
+        list.sort(Comparator                            // For a better comprehension we need to sort the list. We use Comparator interface
+                .comparingInt((State s) -> s.getId().length())        // First we compare the size of all the ID
+                .thenComparing(State::getId));			// Then we compare the value with a classic "alphabetical" sorting
 
         int index=0;   			// We want to put the current state at the beginning of the list so we first search for an occurrence of the state in our list
         boolean test = false;
-        for(int i = 0; i<list.size(); i++) {
-            if(list.get(i).getId().equals(state.getId())) {
-                //if(list.get(i).getId()==state.getId();
+        for (int i = 0; i<list.size(); i++) {
+            if (list.get(i).getId().equals(state.getId())) {
                 index = i;
                 test = true;
             }
         }
-        if(test) {   // if we've found an occurrence then we remove the state
+        if (test) {   // if we've found an occurrence then we remove the state
             list.remove(index);
         }
         list.addFirst(state);           // we add the state at first position in any case
-        //list.addFirst(new State(state));
-        State returning_state = new State(state);
-        returning_state.setId(state.getId()+"'");
-        returning_state.setEpsilon_transitions(list);  // we directly change the value of epsilon_transition's list in the given state
-        //state.setId(state.getId()+"'");
-        return returning_state;
+        State returningState = new State(state);
+        returningState.setId(state.getId()+"'");
+        returningState.setEpsilonTransitions(list);  // we directly change the value of epsilon_transition's list in the given state
+        return returningState;
     }
 
-    public Automaton det_async(boolean print){ // THis function will use the simplified writing of each state to remove epsilon transitions in an automaton
-        Automaton synchronized_a = new Automaton(new LinkedList<State>(), true, nbAlphabetSymbols);
-        for(int i = 0; i<getStates().size(); i++) {   // For all states in the given Automaton, we find the non-epsilon transitions
-            synchronized_a.getStates().add(findEpsilon_transitions(getStates().get(i)));
-            for(String letter : autAlph) {
-                if(synchronized_a.getStates().get(i).getNeighbours().containsKey(letter)) {
-                    for(int j = 0; j< synchronized_a.getStates().get(i).getNeighbours().get(letter).size();j++) {
-                        String number = synchronized_a.getStates().get(i).getNeighbours().get(letter).get(j);
-                        number+="'";
-                        synchronized_a.getStates().get(i).getNeighbours().get(letter).set(j,number);
+    public Automaton determinisationAsync(boolean print){ // THis function will use the simplified writing of each state to remove epsilon transitions in an automaton
+        Automaton synchronizedAutomaton = new Automaton(new LinkedList<>(), true, nbAlphabetSymbols);
+
+        for (int i = 0; i < getStates().size(); i++) {   // For all states in the given Automaton, we find the non-epsilon transitions
+            synchronizedAutomaton.getStates().add(findEpsilon_transitions(getStates().get(i)));
+
+            for (String letter : autAlph) {
+                if (synchronizedAutomaton.getStates().get(i).getNeighbours().containsKey(letter)) {
+                    for (int j = 0; j < synchronizedAutomaton.getStates().get(i).getNeighbours().get(letter).size(); j++) {
+                        String number = synchronizedAutomaton.getStates().get(i).getNeighbours().get(letter).get(j);
+                        number += "'";
+                        synchronizedAutomaton.getStates().get(i).getNeighbours().get(letter).set(j,number);
                     }
                 }
             }
         }
+
         //Now we have the complete Automaton with only non-epsilon transitions and the list of states accessible by epsilon transitions from each state in this Automaton
-        for(State states : synchronized_a.getStates()) {
-            for(State epsilon_states : states.getEpsilon_transitions()) {
-                for(String key : synchronized_a.autAlph) {
+        for (State states : synchronizedAutomaton.getStates()) {
+            for (State epsilon_states : states.getEpsilonTransitions()) {
+                for (String key : synchronizedAutomaton.autAlph) {
                     states.getNeighbours().get(key).addAll(epsilon_states.getNeighbours().get(key));
                 }
             }
         }
-        for(State states : synchronized_a.getStates()) {
-            for(String letter : synchronized_a.autAlph) {
-                LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<String>(states.getNeighbours().get(letter));
+        for (State states : synchronizedAutomaton.getStates()) {
+            for (String letter : synchronizedAutomaton.autAlph) {
+                LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<>(states.getNeighbours().get(letter));
                 states.getNeighbours().get(letter).clear();
                 states.getNeighbours().get(letter).addAll(hSetNeighbours);
             }
         }
-        if(print) {
-            for(State states : synchronized_a.getStates()) {
-                states.print_closed_epsilon();
+        if (print) {
+            for (State states : synchronizedAutomaton.getStates()) {
+                states.printClosedEpsilon();
             }
         }
-        return synchronized_a.det_sync();
+
+        return synchronizedAutomaton.determinisationSync();
     }
 }
