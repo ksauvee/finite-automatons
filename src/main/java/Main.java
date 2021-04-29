@@ -1,11 +1,9 @@
+import java.util.*;
 import automatons.Automaton;
 import automatons.State;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
 public class Main {
+
     public static void TestA() {
         //créer les listes de voisins pour chaque caractère de l'alphabet
         LinkedList<String> s0_nei_a = new LinkedList<String>();
@@ -54,7 +52,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.detSync();
+        Automaton b = a.det_sync();
         affichage(b);
     }
     public static void TestB() {
@@ -105,7 +103,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.detSync();
+        Automaton b = a.det_sync();
         affichage(b);
     }
     public static void TestC() {
@@ -154,7 +152,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.detSync();
+        Automaton b = a.det_sync();
         affichage(b);
     }
     public static void TestC2() {
@@ -200,7 +198,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.detSync();
+        Automaton b = a.det_sync();
         affichage(b);
     }
     public static void TestC3() {
@@ -246,7 +244,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.detSync();
+        Automaton b = a.det_sync();
         affichage(b);
     }
     public static void TestD() {
@@ -292,7 +290,7 @@ public class Main {
         //Afficher Automate de départ
         System.out.println("Automate de départ");
         affichage(a);
-        Automaton b = a.detSync();
+        Automaton b = a.det_sync();
         System.out.println("Nouvel Automate");
         affichage(b);
     }
@@ -461,14 +459,14 @@ public class Main {
         affichage(a);
         System.out.println("Automate déterminisé");
         //System.out.println("alphabet: "+a.aut_alph.toString());
-        affichage(a.detAsync(false));
+        affichage(a.det_async(false));
 
     }
     public static void affichage(Automaton a) {
         for(State states : a.getStates()) {
             System.out.println("ID : "+states.getId());
-            System.out.println("Init : "+states.getIsInit());
-            System.out.println("Exit : "+states.getIsExit());
+            System.out.println("Init : "+states.isInit());
+            System.out.println("Exit : "+states.isExit());
             for(Map.Entry<String, LinkedList<String>> entry : states.getNeighbours().entrySet()) {
                 System.out.println(entry);
             }
@@ -478,6 +476,8 @@ public class Main {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
         //TestA();
-        Test2_1();
+        TestB();
+        System.out.println("test");
     }
+
 }
