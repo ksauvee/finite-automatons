@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class Automaton {
-    private final int nbAlphabetSymbols;
+    private int nbAlphabetSymbols;
     private int nbStates;
     private int nbInitStates;
     private int nbExitStates;
@@ -62,6 +62,11 @@ public class Automaton {
         this.nbExitStates = automaton.getNbExitStates();
         this.nbTransitions = automaton.getNbTransitions();
         this.states = automaton.getStates();
+    }
+
+    public Automaton(final int nbAlphabetSymbols) {
+        this.nbAlphabetSymbols = nbAlphabetSymbols;
+        states = new LinkedList<>();
     }
 
     public int getNbAlphabetSymbols() {
@@ -234,5 +239,135 @@ public class Automaton {
         standardizedAutomaton.setNbTransitions(standardizedAutomaton.findNbTransitionsAutomaton());
 
         return standardizedAutomaton;
+    }
+
+    public Automaton minimization() {
+        HashMap<String, LinkedList<String>> theta = new HashMap<>();
+        LinkedList<String> exits = new LinkedList<>();
+        LinkedList<String> noExits = new LinkedList<>();
+
+        for (State state : states) {
+            if (state.getIsExit()) {
+                exits.add(state.getId());
+            } else {
+                noExits.add(state.getId());
+            }
+        }
+
+        theta.put("T", exits);
+        theta.put("NT", noExits);
+
+        HashMap<String, LinkedList<String>> newTheta = new HashMap<>();
+        int i = 0;
+
+        while (theta.size() != newTheta.size()) {
+            if (i > 0) {
+                theta = new HashMap<>(newTheta);
+                newTheta.clear();
+            }
+            for (String key : theta.keySet()) {
+                HashMap<String, LinkedList<String>> intermediateTheta = new HashMap<>();
+                String newValue = "";
+                for (String id : theta.get(key)) {
+                    StringBuilder newKey = new StringBuilder();
+
+                    for (State state : states) {
+                        if (state.getId().equals(id)) {
+                            newValue = state.getId();
+                            for (String letter : state.getNeighbours().keySet()) {
+                                for (String key2 : theta.keySet()) {
+                                    for (String id2 : theta.get(key2)) {
+                                        if (state.getNeighbours().get(letter).get(0).equals(id2)) {
+                                            newKey.append(key2);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    boolean find = false;
+                    for (String key5 : intermediateTheta.keySet()) {
+                        if (key5.equals(newKey.toString())) {
+                            find = true;
+                            break;
+                        }
+                    }
+
+                    if (!find) {
+                        intermediateTheta.put(newKey.toString(), new LinkedList<>());
+                    }
+
+                    intermediateTheta.get(newKey.toString()).add(newValue);
+                }
+
+                for (String key3 : intermediateTheta.keySet()) {
+                    StringBuilder newThetaValue = new StringBuilder();
+                    for (String n : intermediateTheta.get(key3)) {
+                        newThetaValue.append(n).append(".");
+                    }
+                    newThetaValue.deleteCharAt(newThetaValue.length()-1);
+                    newTheta.put(newThetaValue.toString(), intermediateTheta.get(key3));
+                }
+            }
+            i++;
+        }
+
+        Automaton automatonMinimized = new Automaton(nbAlphabetSymbols);
+        LinkedList<State> newStates = new LinkedList<>();
+        for (String key : theta.keySet()) {
+            State newState = new State(key);
+            newStates.add(newState);
+        }
+        automatonMinimized.setStates(newStates);
+        newStates = automatonMinimized.getStates();
+
+        for (State state : newStates) {
+            char index = state.getId().charAt(0);
+            for (State stat2 : states) {
+                if (stat2.getId().equals(String.valueOf(index))) {
+                    for (String letter : stat2.getNeighbours().keySet()) {
+                        for (String id : stat2.getNeighbours().get(letter)) {
+                            for (String thetaKey : theta.keySet()) {
+                                for (String thetaValue : theta.get(thetaKey)) {
+                                    if (thetaValue.equals(id)) {
+                                        state.addNeighbour(letter, thetaKey);
+                                        automatonMinimized.setNbTransitions(automatonMinimized.getNbTransitions() + 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (State state : newStates) {
+            for (int j = 0; j < state.getId().length(); j+=2) {
+                char index = state.getId().charAt(j);
+
+                for (State state1 : states) {
+                    if (state1.getId().equals(String.valueOf(index))) {
+                        if (state1.getIsInit()) {
+                            state.setIsInit(true);
+                            automatonMinimized.setNbInitStates(automatonMinimized.getNbInitStates() + 1);
+                            break;
+                        }
+
+                        if (state1.getIsExit()) {
+                            state.setIsExit(true);
+                            automatonMinimized.setNbExitStates(automatonMinimized.getNbExitStates() + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        automatonMinimized.setNbStates(newStates.size());
+
+        automatonMinimized.setStates(newStates);
+
+        return automatonMinimized;
     }
 }
