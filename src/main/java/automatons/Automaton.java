@@ -362,6 +362,8 @@ public class Automaton {
         }
 
         for (State state : newStates) {
+            boolean stateIsInit = false;
+            boolean stateIsExit = false;
             int j = 0;
             while (j < state.getId().length()) {
                 int k = j;
