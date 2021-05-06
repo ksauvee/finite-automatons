@@ -362,25 +362,23 @@ public class Automaton {
         }
 
         for (State state : newStates) {
-            for (int j = 0; j < state.getId().length(); j+=2) {
+            int j = 0;
+            while (j < state.getId().length()) {
                 int k = j;
                 StringBuilder index = new StringBuilder();
                 while (k < state.getId().length() && state.getId().charAt(k) != ',') {
                     index.append(state.getId().charAt(k));
                     k++;
                 }
-                j = k;
+                j = k + 1;
 
                 for (State state1 : states) {
                     if (state1.getId().equals(String.valueOf(index))) {
-                        if (state1.getIsInit()) {
-                            state.setIsInit(true);
-                            automatonMinimized.setNbInitStates(automatonMinimized.getNbInitStates() + 1);
-                            break;
-                        }
+                        if (state1.getIsInit() || state1.getIsExit()) {
+                            if (state1.getIsInit()) {
+                                automatonMinimized.setNbInitStates(automatonMinimized.getNbInitStates() + 1);
+                            }
 
-                        if (state1.getIsExit()) {
-                            state.setIsExit(true);
                             automatonMinimized.setNbExitStates(automatonMinimized.getNbExitStates() + 1);
                             break;
                         }
@@ -388,7 +386,6 @@ public class Automaton {
                 }
             }
         }
-
 
         automatonMinimized.setNbStates(newStates.size());
 
