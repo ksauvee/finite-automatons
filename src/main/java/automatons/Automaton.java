@@ -272,6 +272,7 @@ public class Automaton {
             System.out.println("Automaton already complete");
             return null;
         }
+        int nbSupTransitions = 0;
 
         Automaton completeAutomaton = new Automaton(this);
         LinkedList<State> newStates = completeAutomaton.getStates();
@@ -281,10 +282,11 @@ public class Automaton {
 
         for(State state : newStates) {
             if(state.isIncomplete(nbAlphabetSymbols)) {
-                state.completion(autAlph);
+                nbSupTransitions += state.completion(autAlph);
             }
         }
 
+        completeAutomaton.setNbTransitions(completeAutomaton.getNbTransitions() + nbSupTransitions);
         completeAutomaton.setStates(newStates);
         return completeAutomaton;
     }

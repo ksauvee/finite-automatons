@@ -13,12 +13,15 @@ public class State {
 
     public State(String id) {
         this.id = id;
+        this.isInit = false;
+        this.isExit = false;
         neighbours = new HashMap<>();
     }
 
     public State(String id, final boolean isInit) {
         this.id = id;
         this.isInit = isInit;
+        this.isExit = false;
         neighbours = new HashMap<>();
     }
 
@@ -81,11 +84,14 @@ public class State {
         return neighbours.size() != nbAlphabetSymbols;
     }
 
-    public void completion(List<String> alphabet) {
+    public int completion(List<String> alphabet) {
+        int nbSupTransitions = 0;
         for(String letter : alphabet) {
             if(!neighbours.containsKey(letter)){
                 addNeighbour(letter, "P");
+                nbSupTransitions++;
             }
         }
+        return nbSupTransitions;
     }
 }
