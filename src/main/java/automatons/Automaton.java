@@ -47,11 +47,22 @@ public class Automaton {
         nbTransitions = Integer.parseInt(automatonCharacteristics.get(4));
 
         for (int i = 0; i < nbTransitions; ++i) {
-            String initialState = String.valueOf(automatonCharacteristics.get(5+i).charAt(0));
-            String symbol = String.valueOf(automatonCharacteristics.get(5+i).charAt(1));
-            String arrivalState = String.valueOf(automatonCharacteristics.get(5+i).charAt(2));
+            int j = 0;
+            StringBuilder initialState = new StringBuilder();
+            while (automatonCharacteristics.get(5+i).charAt(j) < 97 || automatonCharacteristics.get(5+i).charAt(j) > 122) {
+                initialState.append(automatonCharacteristics.get(5 + i).charAt(j));
+                j++;
+            }
+            String symbol = String.valueOf(automatonCharacteristics.get(5+i).charAt(j));
+            j++;
 
-            states.get(Integer.parseInt(initialState)).addNeighbour(symbol, arrivalState);
+            StringBuilder arrivalState = new StringBuilder();
+            while (j != automatonCharacteristics.get(5+i).length() && (automatonCharacteristics.get(5+i).charAt(j) < 97 || automatonCharacteristics.get(5+i).charAt(j) > 122)) {
+                arrivalState.append(automatonCharacteristics.get(5 + i).charAt(j));
+                j++;
+            }
+
+            states.get(Integer.parseInt(initialState.toString())).addNeighbour(symbol, arrivalState.toString());
         }
     }
 
