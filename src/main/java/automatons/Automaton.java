@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class Automaton {
-    private final int nbAlphabetSymbols;
+    private int nbAlphabetSymbols;
     private int nbStates;
     private int nbInitStates;
     private int nbExitStates;
@@ -51,11 +51,22 @@ public class Automaton {
         nbTransitions = Integer.parseInt(automatonCharacteristics.get(4));
 
         for (int i = 0; i < nbTransitions; ++i) {
-            String initialState = String.valueOf(automatonCharacteristics.get(5+i).charAt(0));
-            String symbol = String.valueOf(automatonCharacteristics.get(5+i).charAt(1));
-            String arrivalState = String.valueOf(automatonCharacteristics.get(5+i).charAt(2));
+            int j = 0;
+            StringBuilder initialState = new StringBuilder();
+            while (automatonCharacteristics.get(5+i).charAt(j) < 97 || automatonCharacteristics.get(5+i).charAt(j) > 122) {
+                initialState.append(automatonCharacteristics.get(5 + i).charAt(j));
+                j++;
+            }
+            String symbol = String.valueOf(automatonCharacteristics.get(5+i).charAt(j));
+            j++;
 
-            states.get(Integer.parseInt(initialState)).addNeighbour(symbol, arrivalState);
+            StringBuilder arrivalState = new StringBuilder();
+            while (j != automatonCharacteristics.get(5+i).length() && (automatonCharacteristics.get(5+i).charAt(j) < 97 || automatonCharacteristics.get(5+i).charAt(j) > 122)) {
+                arrivalState.append(automatonCharacteristics.get(5 + i).charAt(j));
+                j++;
+            }
+
+            states.get(Integer.parseInt(initialState.toString())).addNeighbour(symbol, arrivalState.toString());
         }
         this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
     }
@@ -68,6 +79,11 @@ public class Automaton {
         this.nbTransitions = automaton.getNbTransitions();
         this.states = automaton.getStates();
         this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
+    }
+
+    public Automaton(final int nbAlphabetSymbols) {
+        this.nbAlphabetSymbols = nbAlphabetSymbols;
+        states = new LinkedList<>();
     }
 
     public int getNbAlphabetSymbols() {
@@ -289,5 +305,145 @@ public class Automaton {
         completeAutomaton.setNbTransitions(completeAutomaton.getNbTransitions() + nbSupTransitions);
         completeAutomaton.setStates(newStates);
         return completeAutomaton;
+    }
+
+    public Automaton minimization() {
+        HashMap<String, LinkedList<String>> theta = new HashMap<>();
+        LinkedList<String> exits = new LinkedList<>();
+        LinkedList<String> noExits = new LinkedList<>();
+
+        for (State state : states) {
+            if (state.getIsExit()) {
+                exits.add(state.getId());
+            } else {
+                noExits.add(state.getId());
+            }
+        }
+
+        theta.put("T", exits);
+        theta.put("NT", noExits);
+
+        HashMap<String, LinkedList<String>> newTheta = new HashMap<>();
+        int i = 0;
+
+        while (theta.size() != newTheta.size()) {
+            if (i > 0) {
+                theta = new HashMap<>(newTheta);
+                newTheta.clear();
+            }
+            for (String key : theta.keySet()) {
+                HashMap<String, LinkedList<String>> intermediateTheta = new HashMap<>();
+                String newValue = "";
+                for (String id : theta.get(key)) {
+                    StringBuilder newKey = new StringBuilder();
+
+                    for (State state : states) {
+                        if (state.getId().equals(id)) {
+                            newValue = state.getId();
+                            for (String letter : state.getNeighbours().keySet()) {
+                                for (String key2 : theta.keySet()) {
+                                    for (String id2 : theta.get(key2)) {
+                                        if (state.getNeighbours().get(letter).get(0).equals(id2)) {
+                                            newKey.append(key2).append(",");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    boolean find = false;
+                    for (String key5 : intermediateTheta.keySet()) {
+                        if (key5.equals(newKey.toString())) {
+                            find = true;
+                            break;
+                        }
+                    }
+
+                    if (!find) {
+                        intermediateTheta.put(newKey.toString(), new LinkedList<>());
+                    }
+
+                    intermediateTheta.get(newKey.toString()).add(newValue);
+                }
+
+                for (String key3 : intermediateTheta.keySet()) {
+                    StringBuilder newThetaValue = new StringBuilder();
+                    for (String n : intermediateTheta.get(key3)) {
+                        newThetaValue.append(n).append(",");
+                    }
+                    newThetaValue.deleteCharAt(newThetaValue.length()-1);
+                    newTheta.put(newThetaValue.toString(), intermediateTheta.get(key3));
+                }
+            }
+            i++;
+        }
+
+        if (i == 0) {
+            System.out.println("Already minimized");
+        }
+
+        Automaton automatonMinimized = new Automaton(nbAlphabetSymbols);
+        LinkedList<State> newStates = new LinkedList<>();
+        for (String key : theta.keySet()) {
+            State newState = new State(key);
+            newStates.add(newState);
+        }
+        automatonMinimized.setStates(newStates);
+        newStates = automatonMinimized.getStates();
+
+        for (State state : newStates) {
+            char index = state.getId().charAt(0);
+            for (State stat2 : states) {
+                if (stat2.getId().equals(String.valueOf(index))) {
+                    for (String letter : stat2.getNeighbours().keySet()) {
+                        for (String id : stat2.getNeighbours().get(letter)) {
+                            for (String thetaKey : theta.keySet()) {
+                                for (String thetaValue : theta.get(thetaKey)) {
+                                    if (thetaValue.equals(id)) {
+                                        state.addNeighbour(letter, thetaKey);
+                                        automatonMinimized.setNbTransitions(automatonMinimized.getNbTransitions() + 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (State state : newStates) {
+            boolean stateIsInit = false;
+            boolean stateIsExit = false;
+            int j = 0;
+            while (j < state.getId().length()) {
+                int k = j;
+                StringBuilder index = new StringBuilder();
+                while (k < state.getId().length() && state.getId().charAt(k) != ',') {
+                    index.append(state.getId().charAt(k));
+                    k++;
+                }
+                j = k + 1;
+
+                for (State state1 : states) {
+                    if (state1.getId().equals(String.valueOf(index))) {
+                        if (!stateIsInit && state1.getIsInit()) {
+                            stateIsInit = true;
+                            automatonMinimized.setNbInitStates(automatonMinimized.getNbInitStates() + 1);
+                        }
+
+                        if (!stateIsExit && state1.getIsExit()) {
+                            stateIsExit = true;
+                            automatonMinimized.setNbExitStates(automatonMinimized.getNbExitStates() + 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        automatonMinimized.setNbStates(newStates.size());
+
+        automatonMinimized.setStates(newStates);
+
+        return automatonMinimized;
     }
 }
