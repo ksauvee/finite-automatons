@@ -278,7 +278,7 @@ public class Automaton {
                                 for (String key2 : theta.keySet()) {
                                     for (String id2 : theta.get(key2)) {
                                         if (state.getNeighbours().get(letter).get(0).equals(id2)) {
-                                            newKey.append(key2);
+                                            newKey.append(key2).append(",");
                                         }
                                     }
                                 }
@@ -303,7 +303,7 @@ public class Automaton {
                 for (String key3 : intermediateTheta.keySet()) {
                     StringBuilder newThetaValue = new StringBuilder();
                     for (String n : intermediateTheta.get(key3)) {
-                        newThetaValue.append(n).append(".");
+                        newThetaValue.append(n).append(",");
                     }
                     newThetaValue.deleteCharAt(newThetaValue.length()-1);
                     newTheta.put(newThetaValue.toString(), intermediateTheta.get(key3));
@@ -343,7 +343,13 @@ public class Automaton {
 
         for (State state : newStates) {
             for (int j = 0; j < state.getId().length(); j+=2) {
-                char index = state.getId().charAt(j);
+                int k = j;
+                StringBuilder index = new StringBuilder();
+                while (k < state.getId().length() && state.getId().charAt(k) != ',') {
+                    index.append(state.getId().charAt(k));
+                    k++;
+                }
+                j = k;
 
                 for (State state1 : states) {
                     if (state1.getId().equals(String.valueOf(index))) {
