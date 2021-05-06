@@ -155,6 +155,7 @@ public class Automaton {
         }
 
         complementaryAutomaton.setStates(states);
+        complementaryAutomaton.setNbExitStates(complementaryAutomaton.getNbStates() - complementaryAutomaton.getNbExitStates());
 
         return complementaryAutomaton;
     }
