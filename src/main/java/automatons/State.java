@@ -2,6 +2,7 @@ package automatons;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 
 public class State {
@@ -73,6 +74,18 @@ public class State {
         } else if (!letterTransitions.contains(arrivalState)) {
             // we check the transition doesn't exist in order to avoid duplicates
             letterTransitions.add(arrivalState);
+        }
+    }
+
+    public boolean isIncomplete(int nbAlphabetSymbols) {
+        return neighbours.size() != nbAlphabetSymbols;
+    }
+
+    public void completion(List<String> alphabet) {
+        for(String letter : alphabet) {
+            if(!neighbours.containsKey(letter)){
+                addNeighbour(letter, "P");
+            }
         }
     }
 }

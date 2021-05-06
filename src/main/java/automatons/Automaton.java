@@ -1,5 +1,7 @@
 package automatons;
 
+import java.util.List;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -13,6 +15,8 @@ public class Automaton {
     private int nbExitStates;
     private int nbTransitions;
     private LinkedList<State> states;
+    private final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
+    private final List<String> autAlph;
 
     public Automaton(final LinkedList<String> automatonCharacteristics) {
         // automatons characteristics are stored in String so we convert to Integer to initialize attributes
@@ -53,6 +57,7 @@ public class Automaton {
 
             states.get(Integer.parseInt(initialState)).addNeighbour(symbol, arrivalState);
         }
+        this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
     }
 
     public Automaton(Automaton automaton) {
@@ -62,6 +67,7 @@ public class Automaton {
         this.nbExitStates = automaton.getNbExitStates();
         this.nbTransitions = automaton.getNbTransitions();
         this.states = automaton.getStates();
+        this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
     }
 
     public int getNbAlphabetSymbols() {
@@ -250,5 +256,36 @@ public class Automaton {
         standardizedAutomaton.setNbTransitions(standardizedAutomaton.findNbTransitionsAutomaton());
 
         return standardizedAutomaton;
+    }
+
+    private boolean isComplete() {
+        for(State state : states) {
+            if(state.isIncomplete(nbAlphabetSymbols)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Automaton completion() {
+        if (isComplete()) {
+            System.out.println("Automaton already complete");
+            return null;
+        }
+
+        Automaton completeAutomaton = new Automaton(this);
+        LinkedList<State> newStates = completeAutomaton.getStates();
+
+        State garbage = new State("P");
+        newStates.add(garbage);
+
+        for(State state : newStates) {
+            if(state.isIncomplete(nbAlphabetSymbols)) {
+                state.completion(autAlph);
+            }
+        }
+
+        completeAutomaton.setStates(newStates);
+        return completeAutomaton;
     }
 }
