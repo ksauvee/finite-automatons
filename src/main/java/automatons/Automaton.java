@@ -7,9 +7,9 @@ public class Automaton {
     private final int nbAlphabetSymbols;
     private int nbStates;
     private LinkedList<State> states;
-    private final int nbInitStates;
-    private final int nbExitStates;
-    private final int nbTransitions;
+    private int nbInitStates;
+    private int nbExitStates;
+    private int nbTransitions;
     private boolean sync;
     private final static List<String> alphabet = Arrays.asList("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z");
     private final List<String> autAlph;
@@ -110,13 +110,25 @@ public class Automaton {
     }
 
     public LinkedList<State> getStates() {
-        LinkedList<State> newStates = new LinkedList<>();
+        return states;
+    }
 
-        for (State state : states) {
-            newStates.add(new State(state));
+    public void setNbTransitions(final int nbTransitions) {
+        if (nbTransitions >= 0) {
+            this.nbTransitions = nbTransitions;
         }
+    }
 
-        return newStates;
+    public void setNbInitStates(final int nbInitStates) {
+        if (nbInitStates >= 0) {
+            this.nbInitStates = nbInitStates;
+        }
+    }
+
+    public void setNbExitStates(final int nbExitStates) {
+        if (nbExitStates >= 0) {
+            this.nbExitStates = nbExitStates;
+        }
     }
 
     public void setStates(LinkedList<State> states) {
@@ -150,6 +162,17 @@ public class Automaton {
             }
         }
         return entries;
+    }
+
+    public LinkedList<String> getExits(){
+        //give a linked list with
+        LinkedList<String> exits = new LinkedList<>();
+        for (State state : states) {
+            if (state.isExit()) {
+                exits.add(state.getId());
+            }
+        }
+        return exits;
     }
 
     public boolean severalTransitions() {
@@ -187,6 +210,21 @@ public class Automaton {
                 }
             }
         }
+    }
+
+    public int findNbTransitionsAutomaton() {
+        int nbTransitions = 0;
+
+        for (State state : getStates()) {
+            // automaton's nbTransitions is the sum of the transitions of all states with all symbols
+            HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
+
+            for (String symbols : neighbours.keySet()) {
+                nbTransitions += neighbours.get(symbols).size();
+            }
+        }
+
+        return nbTransitions;
     }
 
 
@@ -230,6 +268,7 @@ public class Automaton {
                             break;
                         }
                     }
+                    state.setIsInit(false);
                     if (add && !state.getId().equals("")) {
                         LinkedList<State> states = deterministicAutomaton.getStates();
                         states.add(state);
@@ -240,6 +279,10 @@ public class Automaton {
                 cloneList.clear();
             } while(modification);
 
+            deterministicAutomaton.setNbStates(deterministicAutomaton.getStates().size());
+            deterministicAutomaton.setNbInitStates(deterministicAutomaton.getEntries().size());
+            deterministicAutomaton.setNbExitStates(deterministicAutomaton.getExits().size());
+            deterministicAutomaton.setNbTransitions(deterministicAutomaton.findNbTransitionsAutomaton());
             return deterministicAutomaton;
         }
     }
@@ -355,6 +398,16 @@ public class Automaton {
         if (print) {
             for (State states : synchronizedAutomaton.getStates()) {
                 states.printClosedEpsilon();
+            }
+        }
+
+        // refresh neighbours in order to avoid bug in memory
+        for (State state : synchronizedAutomaton.getStates()) {
+            for (String letter : state.getNeighbours().keySet()) {
+                LinkedList<String> newArrivalStates = new LinkedList<>(state.getNeighbours().get(letter));
+                HashMap<String, LinkedList<String>> newNeighbours = state.getNeighbours();
+                newNeighbours.replace(letter, state.getNeighbours().get(letter), newArrivalStates);
+                state.setNeighbours(newNeighbours);
             }
         }
 
