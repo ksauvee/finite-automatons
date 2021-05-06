@@ -176,8 +176,13 @@ public class Automaton {
     }
 
     public boolean isStandard() {
+        int nbEntries = 0;
         for (State currentState : states) {
             if (currentState.getIsInit()) {
+                nbEntries++;
+                if (nbEntries > 1) {
+                    return false;
+                }
                 for (String symbol : currentState.getNeighbours().keySet()) {
                     // we check is there a transition to currentState
                     for (String arrivalState : currentState.getNeighbours().get(symbol)) {
