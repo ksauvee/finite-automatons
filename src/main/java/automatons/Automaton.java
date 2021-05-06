@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public class Automaton {
-    private int nbAlphabetSymbols;
+    private final int nbAlphabetSymbols;
     private int nbStates;
     private int nbInitStates;
     private int nbExitStates;
@@ -84,6 +84,7 @@ public class Automaton {
     public Automaton(final int nbAlphabetSymbols) {
         this.nbAlphabetSymbols = nbAlphabetSymbols;
         states = new LinkedList<>();
+        this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
     }
 
     public int getNbAlphabetSymbols() {
