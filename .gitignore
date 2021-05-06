@@ -13,3 +13,4 @@ out
 
 # Eclipse specific files/directories #
 ######################################
+/bin/
