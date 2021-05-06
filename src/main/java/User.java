@@ -1,4 +1,4 @@
-package automatons;
+package main.java.automatons;
 
 import java.util.HashMap;
 import java.util.LinkedList;
