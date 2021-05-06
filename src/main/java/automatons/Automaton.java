@@ -146,7 +146,7 @@ public class Automaton {
         return automatonInformations;
     }
 
-    public Automaton automatonComplementarization() {
+    public Automaton complementarization() {
         Automaton complementaryAutomaton = new Automaton(this);
         LinkedList<State> states = complementaryAutomaton.getStates();
 
@@ -175,18 +175,28 @@ public class Automaton {
         return nbTransitions;
     }
 
-    public boolean isStandard() {
-        int nbEntries = 0;
+    public LinkedList<String> getEntries() {
+        LinkedList<String> entries = new LinkedList<>();
         for (State currentState : states) {
-            if (currentState.getIsInit()) {
-                nbEntries++;
-                if (nbEntries > 1) {
-                    return false;
-                }
-                for (String symbol : currentState.getNeighbours().keySet()) {
-                    // we check is there a transition to currentState
-                    for (String arrivalState : currentState.getNeighbours().get(symbol)) {
-                        if (arrivalState.equals(currentState.getId())) {
+            entries.add(currentState.getId());
+        }
+
+        return entries;
+    }
+
+    public boolean isStandard() {
+        LinkedList<String> entries = getEntries();
+
+        if (entries.size() > 1) {
+            return false;
+        }
+
+        for (State currentState : states) {
+            for (String symbol : currentState.getNeighbours().keySet()) {
+                // we check is there a transition to currentState
+                for (String arrivalState : currentState.getNeighbours().get(symbol)) {
+                    for (String entry : entries) {
+                        if (arrivalState.equals(entry)) {
                             return false;
                         }
                     }
@@ -197,7 +207,7 @@ public class Automaton {
         return true;
     }
 
-    public Automaton automatonStandardization() {
+    public Automaton standardization() {
         if (isStandard()) {
             System.out.println("Automaton is already standard");
             return null;
@@ -213,7 +223,7 @@ public class Automaton {
         for (State currentState : states) {
             // we add the transitions of the old entries to the new entry
             if (currentState.getIsInit()) {
-                currentState.setIsInit(!currentState.getIsInit());
+                currentState.setIsInit(false);
 
                 // we get the transitions of the old entry
                 HashMap<String, LinkedList<String>> currentStateNeighbours = currentState.getNeighbours();
