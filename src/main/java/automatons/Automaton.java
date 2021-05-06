@@ -374,13 +374,14 @@ public class Automaton {
 
                 for (State state1 : states) {
                     if (state1.getId().equals(String.valueOf(index))) {
-                        if (state1.getIsInit() || state1.getIsExit()) {
-                            if (state1.getIsInit()) {
-                                automatonMinimized.setNbInitStates(automatonMinimized.getNbInitStates() + 1);
-                            }
+                        if (!stateIsInit && state1.getIsInit()) {
+                            stateIsInit = true;
+                            automatonMinimized.setNbInitStates(automatonMinimized.getNbInitStates() + 1);
+                        }
 
+                        if (!stateIsExit && state1.getIsExit()) {
+                            stateIsExit = true;
                             automatonMinimized.setNbExitStates(automatonMinimized.getNbExitStates() + 1);
-                            break;
                         }
                     }
                 }
