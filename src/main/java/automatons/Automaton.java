@@ -1,5 +1,7 @@
 package automatons;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -749,5 +751,89 @@ public class Automaton {
         automatonMinimized.setStates(newStates);
 
         return automatonMinimized;
+    }
+
+    public void print() {
+        System.out.print("Etats Initiaux : ");
+        for (State state : states) {
+            if (state.getIsInit()) {
+                System.out.println(state.getId() + " ");
+            }
+        }
+
+        System.out.print("Etats Terminaux : ");
+        for (State state : states) {
+            if (state.getIsExit()) {
+                System.out.println(state.getId() + " ");
+            }
+        }
+
+        System.out.print("  ");
+        char letter = 97;
+        for (int i = 0; i < nbAlphabetSymbols; i++) {
+            System.out.print(letter + " ");
+            letter++;
+        }
+        System.out.println();
+
+        for (State state : states) {
+            System.out.print(state.getId() + " ");
+            for (String letter2 : state.getNeighbours().keySet()) {
+                for (String neighbourId : state.getNeighbours().get(letter2)) {
+                    System.out.print(neighbourId);
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    public void writeAutomatonOnFile(String filename) {
+        try {
+            FileWriter myWriter = new FileWriter(filename);
+            myWriter.write(nbAlphabetSymbols + "\n");
+            myWriter.write(nbStates + "\n");
+            LinkedList<String> entries = new LinkedList<>();
+            LinkedList<String> exits = new LinkedList<>();
+
+            for (State state : states) {
+                if (state.getIsInit()) {
+                    entries.add(state.getId());
+                }
+
+                if (state.getIsExit()) {
+                    exits.add(state.getId());
+                }
+            }
+            myWriter.write(nbInitStates + " ");
+            for (String entryId : entries) {
+                myWriter.write(entryId + " ");
+            }
+            myWriter.write("\n");
+
+            for (String exitId : exits) {
+                myWriter.write(exitId + " ");
+            }
+            myWriter.write("\n");
+
+            myWriter.write(nbTransitions + "\n");
+
+            int transitions = 0;
+            for (State state : states) {
+                for (String letter : state.getNeighbours().keySet()) {
+                    for (String neighbourId : state.getNeighbours().get(letter)) {
+                        transitions++;
+                        if (transitions == nbTransitions) {
+                            myWriter.write(state.getId() + letter + neighbourId);
+                        } else {
+                            myWriter.write(state.getId() + letter + neighbourId + "\n");
+                        }
+                    }
+                }
+            }
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occured.");
+            e.printStackTrace();
+        }
     }
 }
