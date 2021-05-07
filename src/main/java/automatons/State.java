@@ -38,6 +38,14 @@ public class State {
         this.epsilonTransitions = new LinkedList<>(other_state.epsilonTransitions);
     }
 
+    public State(String i, boolean isInit) {
+        this.id = i;
+        this.isInit = isInit;
+        this.isExit = false;
+        this.neighbours = new HashMap<>();
+        this.epsilonTransitions = new LinkedList<>();
+    }
+
     public String getId() {
         return id;
     }
@@ -46,7 +54,7 @@ public class State {
         this.id = id;
     }
 
-    public boolean isInit() {
+    public boolean getIsInit() {
         return isInit;
     }
 
@@ -54,7 +62,7 @@ public class State {
         this.isInit = isInit;
     }
 
-    public boolean isExit() {
+    public boolean getIsExit() {
         return isExit;
     }
 
@@ -174,5 +182,20 @@ public class State {
 
         neighbours.get(letter).clear(); // on clear à nouveau la liste de nos voisins
         neighbours.get(letter).add(newStateNeighbour.toString());
+    }
+
+    public boolean isIncomplete(int nbAlphabetSymbols) {
+        return neighbours.size() != nbAlphabetSymbols;
+    }
+
+    public int completion(List<String> alphabet) {
+        int nbSupTransitions = 0;
+        for(String letter : alphabet) {
+            if(!neighbours.containsKey(letter)){
+                addNeighbour(letter, "P");
+                nbSupTransitions++;
+            }
+        }
+        return nbSupTransitions;
     }
 }

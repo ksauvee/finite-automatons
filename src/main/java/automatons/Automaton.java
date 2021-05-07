@@ -81,6 +81,23 @@ public class Automaton {
         }
     }
 
+    public Automaton(Automaton automaton) {
+        this.nbAlphabetSymbols = automaton.getNbAlphabetSymbols();
+        this.nbStates = automaton.getNbStates();
+        this.nbInitStates = automaton.getNbInitStates();
+        this.nbExitStates = automaton.getNbExitStates();
+        this.nbTransitions = automaton.getNbTransitions();
+        this.states = automaton.getStates();
+        this.sync = automaton.getSync();
+        this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
+    }
+
+    public Automaton(final int nbAlphabetSymbols) {
+        this.nbAlphabetSymbols = nbAlphabetSymbols;
+        states = new LinkedList<>();
+        this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
+    }
+
     public static LinkedList<String> readAutomatonOnFile(final String filename) {
         LinkedList<String> automatonInformations = new LinkedList<>();
         try {
@@ -101,16 +118,30 @@ public class Automaton {
         return automatonInformations;
     }
 
+    public Boolean getSync() {
+        return sync;
+    }
+
+    public void setSync(boolean sync) {
+        this.sync = sync;
+    }
+
     public int getNbStates() {
         return nbStates;
     }
 
-    public void setNbStates(int nbStates) {
-        this.nbStates = nbStates;
+    public void setNbStates(final int nbStates) {
+        if (nbStates >= 0) {
+            this.nbStates = nbStates;
+        }
     }
 
-    public LinkedList<State> getStates() {
-        return states;
+    public int getNbAlphabetSymbols() {
+        return nbAlphabetSymbols;
+    }
+
+    public int getNbInitStates() {
+        return nbInitStates;
     }
 
     public void setNbTransitions(final int nbTransitions) {
@@ -125,14 +156,40 @@ public class Automaton {
         }
     }
 
+    public int getNbExitStates() {
+        return nbExitStates;
+    }
+
     public void setNbExitStates(final int nbExitStates) {
         if (nbExitStates >= 0) {
             this.nbExitStates = nbExitStates;
         }
     }
 
-    public void setStates(LinkedList<State> states) {
-        this.states = states;
+    public int getNbTransitions() {
+        return nbTransitions;
+    }
+
+    public LinkedList<State> getStates() {
+        return states;
+    }
+
+    public LinkedList<State> getStatesImprove() {
+        LinkedList<State> newStates = new LinkedList<>();
+
+        for (State state : states) {
+            newStates.add(new State(state));
+        }
+
+        return newStates;
+    }
+
+    public void setStates(final LinkedList<State> states) {
+        this.states = new LinkedList<>(states);
+    }
+
+    public void addState(State state) {
+        states.add(state);
     }
 
     public boolean isDeterminist() {
@@ -143,7 +200,7 @@ public class Automaton {
         //browse every states of an automaton and check if the number of entries is >1
         int nbEntries = 0;
         for (State state : states) {
-            if (state.isInit()) {
+            if (state.getIsInit()) {
                 ++nbEntries;
             }
             if (nbEntries > 1) {
@@ -157,10 +214,19 @@ public class Automaton {
         //give a linked list with
         LinkedList<State> entries = new LinkedList<>();
         for (State state : states) {
-            if (state.isInit()) {
+            if (state.getIsInit()) {
                 entries.add(new State(state));
             }
         }
+        return entries;
+    }
+
+    public LinkedList<String> getEntries2() {
+        LinkedList<String> entries = new LinkedList<>();
+        for (State currentState : states) {
+            entries.add(currentState.getId());
+        }
+
         return entries;
     }
 
@@ -168,7 +234,7 @@ public class Automaton {
         //give a linked list with
         LinkedList<String> exits = new LinkedList<>();
         for (State state : states) {
-            if (state.isExit()) {
+            if (state.getIsExit()) {
                 exits.add(state.getId());
             }
         }
@@ -215,7 +281,7 @@ public class Automaton {
     public int findNbTransitionsAutomaton() {
         int nbTransitions = 0;
 
-        for (State state : getStates()) {
+        for (State state : getStatesImprove()) {
             // automaton's nbTransitions is the sum of the transitions of all states with all symbols
             HashMap<String, LinkedList<String>> neighbours = state.getNeighbours();
 
@@ -236,12 +302,12 @@ public class Automaton {
             Automaton deterministicAutomaton = new Automaton(new LinkedList<>(), true, nbAlphabetSymbols);
 
             if (severalEntries()) {
-                LinkedList<State> newStates = deterministicAutomaton.getStates();
+                LinkedList<State> newStates = deterministicAutomaton.getStatesImprove();
                 newStates.add(concatList(getEntries()));
                 newStates.get(0).setIsInit(true);
                 deterministicAutomaton.setStates(newStates);
             } else {
-                LinkedList<State> newStates = deterministicAutomaton.getStates();
+                LinkedList<State> newStates = deterministicAutomaton.getStatesImprove();
                 newStates.add(getEntries().get(0));
                 deterministicAutomaton.setStates(newStates);
             }
@@ -270,7 +336,7 @@ public class Automaton {
                     }
                     state.setIsInit(false);
                     if (add && !state.getId().equals("")) {
-                        LinkedList<State> states = deterministicAutomaton.getStates();
+                        LinkedList<State> states = deterministicAutomaton.getStatesImprove();
                         states.add(state);
                         deterministicAutomaton.setStates(states);
                         modification = true;
@@ -279,7 +345,7 @@ public class Automaton {
                 cloneList.clear();
             } while(modification);
 
-            deterministicAutomaton.setNbStates(deterministicAutomaton.getStates().size());
+            deterministicAutomaton.setNbStates(deterministicAutomaton.getStatesImprove().size());
             deterministicAutomaton.setNbInitStates(deterministicAutomaton.getEntries().size());
             deterministicAutomaton.setNbExitStates(deterministicAutomaton.getExits().size());
             deterministicAutomaton.setNbTransitions(deterministicAutomaton.findNbTransitionsAutomaton());
@@ -412,5 +478,246 @@ public class Automaton {
         }
 
         return synchronizedAutomaton.determinisationSync();
+    }
+
+    public boolean isStandard() {
+        LinkedList<String> entries = getEntries2();
+
+        if (entries.size() > 1) {
+            return false;
+        }
+
+        for (State currentState : states) {
+            for (String symbol : currentState.getNeighbours().keySet()) {
+                // we check is there a transition to currentState
+                for (String arrivalState : currentState.getNeighbours().get(symbol)) {
+                    for (String entry : entries) {
+                        if (arrivalState.equals(entry)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public Automaton standardization() {
+        if (isStandard()) {
+            System.out.println("Automaton is already standard");
+            return null;
+        }
+        Automaton standardizedAutomaton = new Automaton(this);
+
+        // we create the new entry
+        State newEntry = new State("i", true);
+        standardizedAutomaton.setNbStates(standardizedAutomaton.getNbStates()+1);
+
+
+        LinkedList<State> states = standardizedAutomaton.getStatesImprove();
+        for (State currentState : states) {
+            // we add the transitions of the old entries to the new entry
+            if (currentState.getIsInit()) {
+                currentState.setIsInit(false);
+
+                // we get the transitions of the old entry
+                HashMap<String, LinkedList<String>> currentStateNeighbours = currentState.getNeighbours();
+
+                // we merge the transitions between the old entries and the new entry
+                for (String symbol : currentStateNeighbours.keySet()) {
+                    for (String arrivalState : currentStateNeighbours.get(symbol)) {
+                        newEntry.addNeighbour(symbol, arrivalState);
+                    }
+                }
+
+                // if one entry is also an exit then the new entry becomes an exit
+                if (currentState.getIsExit()) {
+                    newEntry.setIsExit(true);
+                    standardizedAutomaton.setNbExitStates(standardizedAutomaton.getNbExitStates()+1);
+                }
+            }
+        }
+
+        // modification the standardized automaton characteristics
+        standardizedAutomaton.setNbInitStates(1);
+        standardizedAutomaton.setStates(states);
+        standardizedAutomaton.addState(newEntry);
+        standardizedAutomaton.setNbTransitions(standardizedAutomaton.findNbTransitionsAutomaton());
+
+        return standardizedAutomaton;
+    }
+
+    private boolean isComplete() {
+        for(State state : states) {
+            if(state.isIncomplete(nbAlphabetSymbols)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Automaton completion() {
+        if (isComplete()) {
+            System.out.println("Automaton already complete");
+            return null;
+        }
+        int nbSupTransitions = 0;
+
+        Automaton completeAutomaton = new Automaton(this);
+        LinkedList<State> newStates = completeAutomaton.getStatesImprove();
+
+        State garbage = new State("P");
+        newStates.add(garbage);
+
+        for(State state : newStates) {
+            if(state.isIncomplete(nbAlphabetSymbols)) {
+                nbSupTransitions += state.completion(autAlph);
+            }
+        }
+
+        completeAutomaton.setNbTransitions(completeAutomaton.getNbTransitions() + nbSupTransitions);
+        completeAutomaton.setStates(newStates);
+        return completeAutomaton;
+    }
+
+    public Automaton minimization() {
+        HashMap<String, LinkedList<String>> theta = new HashMap<>();
+        LinkedList<String> exits = new LinkedList<>();
+        LinkedList<String> noExits = new LinkedList<>();
+
+        for (State state : states) {
+            if (state.getIsExit()) {
+                exits.add(state.getId());
+            } else {
+                noExits.add(state.getId());
+            }
+        }
+
+        theta.put("T", exits);
+        theta.put("NT", noExits);
+
+        HashMap<String, LinkedList<String>> newTheta = new HashMap<>();
+        int i = 0;
+
+        while (theta.size() != newTheta.size()) {
+            if (i > 0) {
+                theta = new HashMap<>(newTheta);
+                newTheta.clear();
+            }
+            for (String key : theta.keySet()) {
+                HashMap<String, LinkedList<String>> intermediateTheta = new HashMap<>();
+                String newValue = "";
+                for (String id : theta.get(key)) {
+                    StringBuilder newKey = new StringBuilder();
+
+                    for (State state : states) {
+                        if (state.getId().equals(id)) {
+                            newValue = state.getId();
+                            for (String letter : state.getNeighbours().keySet()) {
+                                for (String key2 : theta.keySet()) {
+                                    for (String id2 : theta.get(key2)) {
+                                        if (state.getNeighbours().get(letter).get(0).equals(id2)) {
+                                            newKey.append(key2).append(",");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    boolean find = false;
+                    for (String key5 : intermediateTheta.keySet()) {
+                        if (key5.equals(newKey.toString())) {
+                            find = true;
+                            break;
+                        }
+                    }
+
+                    if (!find) {
+                        intermediateTheta.put(newKey.toString(), new LinkedList<>());
+                    }
+
+                    intermediateTheta.get(newKey.toString()).add(newValue);
+                }
+
+                for (String key3 : intermediateTheta.keySet()) {
+                    StringBuilder newThetaValue = new StringBuilder();
+                    for (String n : intermediateTheta.get(key3)) {
+                        newThetaValue.append(n).append(",");
+                    }
+                    newThetaValue.deleteCharAt(newThetaValue.length()-1);
+                    newTheta.put(newThetaValue.toString(), intermediateTheta.get(key3));
+                }
+            }
+            i++;
+        }
+
+        if (i == 0) {
+            System.out.println("Already minimized");
+        }
+
+        Automaton automatonMinimized = new Automaton(nbAlphabetSymbols);
+        LinkedList<State> newStates = new LinkedList<>();
+        for (String key : theta.keySet()) {
+            State newState = new State(key);
+            newStates.add(newState);
+        }
+        automatonMinimized.setStates(newStates);
+        newStates = automatonMinimized.getStatesImprove();
+
+        for (State state : newStates) {
+            char index = state.getId().charAt(0);
+            for (State stat2 : states) {
+                if (stat2.getId().equals(String.valueOf(index))) {
+                    for (String letter : stat2.getNeighbours().keySet()) {
+                        for (String id : stat2.getNeighbours().get(letter)) {
+                            for (String thetaKey : theta.keySet()) {
+                                for (String thetaValue : theta.get(thetaKey)) {
+                                    if (thetaValue.equals(id)) {
+                                        state.addNeighbour(letter, thetaKey);
+                                        automatonMinimized.setNbTransitions(automatonMinimized.getNbTransitions() + 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for (State state : newStates) {
+            boolean stateIsInit = false;
+            boolean stateIsExit = false;
+            int j = 0;
+            while (j < state.getId().length()) {
+                int k = j;
+                StringBuilder index = new StringBuilder();
+                while (k < state.getId().length() && state.getId().charAt(k) != ',') {
+                    index.append(state.getId().charAt(k));
+                    k++;
+                }
+                j = k + 1;
+
+                for (State state1 : states) {
+                    if (state1.getId().equals(String.valueOf(index))) {
+                        if (!stateIsInit && state1.getIsInit()) {
+                            stateIsInit = true;
+                            automatonMinimized.setNbInitStates(automatonMinimized.getNbInitStates() + 1);
+                        }
+
+                        if (!stateIsExit && state1.getIsExit()) {
+                            stateIsExit = true;
+                            automatonMinimized.setNbExitStates(automatonMinimized.getNbExitStates() + 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        automatonMinimized.setNbStates(newStates.size());
+
+        automatonMinimized.setStates(newStates);
+
+        return automatonMinimized;
     }
 }
