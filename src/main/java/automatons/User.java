@@ -27,8 +27,14 @@ public class User {
         idCurrentState = idInit;
 
         while (i < word.length()) {
+            State currentState = null;
             char character = word.charAt(i);
-            State currentState = automatonTested.getStates().get(Integer.parseInt(idCurrentState));
+            for (State state : automatonTested.getStatesImprove()) {
+                if (state.getId().equals(idCurrentState)) {
+                    currentState = state;
+                }
+            }
+            assert currentState != null;
             HashMap<String, LinkedList<String>> currentStateNeighbours = currentState.getNeighbours();
 
             // check case no possible transition
@@ -42,7 +48,7 @@ public class User {
             ++i;
         }
 
-        if (automatonTested.getStates().get(Integer.parseInt(idCurrentState)).getIsExit()) {
+        if (automatonTested.getStatesImprove().get(Integer.parseInt(idCurrentState)).getIsExit()) {
             System.out.println("Word recognized.");
         } else {
             System.out.println("Word not recognized.");

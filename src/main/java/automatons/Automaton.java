@@ -23,6 +23,17 @@ public class Automaton {
     private final List<String> autAlph;
 
 
+    public Automaton() {
+        this.nbStates = 0;
+        this.states = null;
+        this.nbInitStates = 0;
+        this.nbExitStates = 0;
+        this.nbTransitions = 0;
+        this.nbAlphabetSymbols = 0;
+        this.autAlph = null;
+    }
+
+
     public Automaton(LinkedList<State> states, boolean sync, int nbAlphabetSymbols) {
         this.nbStates = states.size();
         this.states = states;
@@ -116,6 +127,18 @@ public class Automaton {
         this.nbAlphabetSymbols = nbAlphabetSymbols;
         states = new LinkedList<>();
         this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
+    }
+
+    public void printAutomaton() {
+        for(State states : this.getStates()) {
+            System.out.println("ID : "+states.getId());
+            System.out.println("Init : "+states.getIsInit());
+            System.out.println("Exit : "+states.getIsExit());
+            for(Map.Entry<String, LinkedList<String>> entry : states.getNeighbours().entrySet()) {
+                System.out.println(entry);
+            }
+            System.out.println("             fin Etat "+states.getId()+"\n\n");
+        }
     }
 
     public int getNbAlphabetSymbols() {
