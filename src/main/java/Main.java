@@ -1,9 +1,5 @@
-import automatons.Automaton;
-
-import java.util.LinkedList;
-
 public class Main {
     public static void main(String[] args) {
-        // code here
+        // please code here
     }
 }
