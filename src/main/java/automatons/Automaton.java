@@ -33,6 +33,8 @@ public class Automaton {
         this.nbAlphabetSymbols = nbAlphabetSymbols;
         this.autAlph = alphabet.subList(0, nbAlphabetSymbols);
 
+        // if async the last character is unused because nbAlphabetSymbols count "*"
+        // so we replace the last character by "*"
         if(!sync) {
             this.autAlph.set(nbAlphabetSymbols-1, "*");
         }
@@ -193,6 +195,7 @@ public class Automaton {
     }
 
     public LinkedList<State> getStatesImprove() {
+        // getStates with safe copy
         LinkedList<State> newStates = new LinkedList<>();
 
         for (State state : states) {
@@ -240,6 +243,7 @@ public class Automaton {
     }
 
     public LinkedList<String> getEntries2() {
+        // getEntrie but we store only state id
         LinkedList<String> entries = new LinkedList<>();
         for (State currentState : states) {
             entries.add(currentState.getId());
@@ -256,6 +260,7 @@ public class Automaton {
             state.setIsExit(!state.getIsExit());
         }
 
+        // modification the complementary automaton characteristics
         complementaryAutomaton.setStates(states);
         complementaryAutomaton.setNbExitStates(complementaryAutomaton.getNbStates() - complementaryAutomaton.getNbExitStates());
 
@@ -263,7 +268,7 @@ public class Automaton {
     }
     
     public LinkedList<String> getExits(){
-        //give a linked list with
+        //give a linked list with exists
         LinkedList<String> exits = new LinkedList<>();
         for (State state : states) {
             if (state.getIsExit()) {
@@ -520,7 +525,7 @@ public class Automaton {
 
         for (State currentState : states) {
             for (String symbol : currentState.getNeighbours().keySet()) {
-                // we check is there a transition to currentState
+                // we check is there a transition to an entry
                 for (String arrivalState : currentState.getNeighbours().get(symbol)) {
                     for (String entry : entries) {
                         if (arrivalState.equals(entry)) {
@@ -614,6 +619,7 @@ public class Automaton {
     }
 
     public Automaton minimization() {
+        // initialization
         HashMap<String, LinkedList<String>> theta = new HashMap<>();
         LinkedList<String> exits = new LinkedList<>();
         LinkedList<String> noExits = new LinkedList<>();
@@ -632,25 +638,35 @@ public class Automaton {
         HashMap<String, LinkedList<String>> newTheta = new HashMap<>();
         int i = 0;
 
+        // while the two partitions are different we process
         while (theta.size() != newTheta.size()) {
             if (i > 0) {
+                // we actualize the theta after the first loop
                 theta = new HashMap<>(newTheta);
                 newTheta.clear();
             }
+
+            /* we construct the intermediate theta
+            where the keys are the transitions expressed in terms of parts
+            and the values the states associated
+            */
             for (String key : theta.keySet()) {
                 HashMap<String, LinkedList<String>> intermediateTheta = new HashMap<>();
                 String newValue = "";
-                for (String id : theta.get(key)) {
+                for (String stateId : theta.get(key)) {
                     StringBuilder newKey = new StringBuilder();
 
                     for (State state : states) {
-                        if (state.getId().equals(id)) {
+                        if (state.getId().equals(stateId)) {
                             newValue = state.getId();
+                            // we search the transitions
                             for (String letter : state.getNeighbours().keySet()) {
-                                for (String key2 : theta.keySet()) {
-                                    for (String id2 : theta.get(key2)) {
-                                        if (state.getNeighbours().get(letter).get(0).equals(id2)) {
-                                            newKey.append(key2).append(",");
+                                // and expressed them with the parts
+                                for (String part : theta.keySet()) {
+                                    for (String stateIdInPart : theta.get(part)) {
+                                        if (state.getNeighbours().get(letter).get(0).equals(stateIdInPart)) {
+                                            // then we construct the new parts
+                                            newKey.append(part).append(",");
                                         }
                                     }
                                 }
@@ -658,13 +674,15 @@ public class Automaton {
                         }
                     }
                     boolean find = false;
-                    for (String key5 : intermediateTheta.keySet()) {
-                        if (key5.equals(newKey.toString())) {
+                    for (String part : intermediateTheta.keySet()) {
+                        if (part.equals(newKey.toString())) {
                             find = true;
                             break;
                         }
                     }
 
+                    // if the new part isn't already in the intermediate then we add the part
+                    // else we actualize the part
                     if (!find) {
                         intermediateTheta.put(newKey.toString(), new LinkedList<>());
                     }
@@ -672,24 +690,31 @@ public class Automaton {
                     intermediateTheta.get(newKey.toString()).add(newValue);
                 }
 
-                for (String key3 : intermediateTheta.keySet()) {
+                /* finally we construct the newTheta based on intermediate theta
+                the keys are the concatenation of the states in the part
+                the values are the intermediate theta keys
+                 */
+                for (String part : intermediateTheta.keySet()) {
                     StringBuilder newThetaValue = new StringBuilder();
-                    for (String n : intermediateTheta.get(key3)) {
-                        newThetaValue.append(n).append(",");
+                    for (String newStateId : intermediateTheta.get(part)) {
+                        newThetaValue.append(newStateId).append(",");
                     }
                     newThetaValue.deleteCharAt(newThetaValue.length()-1);
-                    newTheta.put(newThetaValue.toString(), intermediateTheta.get(key3));
+                    newTheta.put(newThetaValue.toString(), intermediateTheta.get(part));
                 }
             }
             i++;
         }
 
+        // if we pass only one time in the loop then it seem the automaton is alreay minimized
         if (i == 0) {
             System.out.println("Already minimized");
         }
 
+        // we create the automaton minimized
         Automaton automatonMinimized = new Automaton(nbAlphabetSymbols);
         LinkedList<State> newStates = new LinkedList<>();
+        // first we create his states
         for (String key : theta.keySet()) {
             State newState = new State(key);
             newStates.add(newState);
@@ -697,16 +722,17 @@ public class Automaton {
         automatonMinimized.setStates(newStates);
         newStates = automatonMinimized.getStates();
 
-        for (State state : newStates) {
-            char index = state.getId().charAt(0);
-            for (State stat2 : states) {
-                if (stat2.getId().equals(String.valueOf(index))) {
-                    for (String letter : stat2.getNeighbours().keySet()) {
-                        for (String id : stat2.getNeighbours().get(letter)) {
+        // then we create the transitions
+        for (State newState : newStates) {
+            char index = newState.getId().charAt(0);
+            for (State oldState : states) {
+                if (oldState.getId().equals(String.valueOf(index))) {
+                    for (String letter : oldState.getNeighbours().keySet()) {
+                        for (String id : oldState.getNeighbours().get(letter)) {
                             for (String thetaKey : theta.keySet()) {
                                 for (String thetaValue : theta.get(thetaKey)) {
                                     if (thetaValue.equals(id)) {
-                                        state.addNeighbour(letter, thetaKey);
+                                        newState.addNeighbour(letter, thetaKey);
                                         automatonMinimized.setNbTransitions(automatonMinimized.getNbTransitions() + 1);
                                     }
                                 }
@@ -717,6 +743,7 @@ public class Automaton {
             }
         }
 
+        // finally we find the new entries and exits
         for (State state : newStates) {
             boolean stateIsInit = false;
             boolean stateIsExit = false;
