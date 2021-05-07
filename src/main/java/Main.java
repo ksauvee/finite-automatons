@@ -20,7 +20,7 @@ public class Main {
             }
 
             automatonFileName += automatonNumber +".txt";
-            System.out.printf("L'Automate selectionné est %s\n", automatonFileName);
+            System.out.printf("L'Automate selectionne est %s\n", automatonFileName);
             Automaton testedAutomaton = new Automaton (Automaton.readAutomatonOnFile(automatonFileName));
             System.out.println("Voici l'Automate");
             testedAutomaton.printAutomaton();
@@ -31,8 +31,8 @@ public class Main {
             System.out.println("""
                     - dc : Determinisation et Completion
                     - m : Minimisation (l'automate sera d'abord déterminise et complete)
-                    - w : Reconnaissance de mots
-                    - c : Construction de l'Automate reconnaissant le langage complémentaire (l'automate minimal sera utilise)
+                    - w : Reconnaissance de mots (l'automate sera d'abord determinise)
+                    - c : Construction de l'Automate reconnaissant le langage complementaire (l'automate minimal sera utilise)
                     - s : Standardisation""");
             Scanner keyboardInputFunctionality = new Scanner(System.in);
             String functionality = keyboardInputFunctionality.nextLine();
