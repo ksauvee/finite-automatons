@@ -641,6 +641,16 @@ public class Automaton {
         return completeAutomaton;
     }
 
+    public void printPart(HashMap<String, LinkedList<String>> part) {
+        for (String partName : part.keySet()) {
+            System.out.print(partName + " : ");
+            for (String stateId : part.get(partName)) {
+                System.out.print(stateId + " ");
+            }
+        }
+        System.out.println("\n");
+    }
+
     public Automaton minimization() {
         // initialization
         HashMap<String, LinkedList<String>> theta = new HashMap<>();
@@ -658,6 +668,8 @@ public class Automaton {
         theta.put("T", exits);
         theta.put("NT", noExits);
 
+        System.out.println("Affichage partitions :");
+
         HashMap<String, LinkedList<String>> newTheta = new HashMap<>();
         int i = 0;
 
@@ -668,6 +680,7 @@ public class Automaton {
                 theta = new HashMap<>(newTheta);
                 newTheta.clear();
             }
+            printPart(theta);
 
             /* we construct the intermediate theta
             where the keys are the transitions expressed in terms of parts

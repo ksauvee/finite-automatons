@@ -97,6 +97,7 @@ public class Main {
                     deterministAutomaton.printAutomaton();
                     System.out.println("\n\nVoici l'automate minimise");
                     minimalAutomaton = deterministAutomaton.completion().minimization();
+                    System.out.println("\n");
                     minimalAutomaton.printAutomaton();
                 }
                 case "w" -> {
