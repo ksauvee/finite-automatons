@@ -565,7 +565,7 @@ public class Automaton {
     public Automaton standardization() {
         if (isStandard()) {
             System.out.println("Automaton is already standard");
-            return null;
+            return this;
         }
         Automaton standardizedAutomaton = new Automaton(this);
 
@@ -619,7 +619,7 @@ public class Automaton {
     public Automaton completion() {
         if (isComplete()) {
             System.out.println("Automaton already complete");
-            return null;
+            return this;
         }
         int nbSupTransitions = 0;
 
@@ -745,7 +745,7 @@ public class Automaton {
         // if we pass only one time in the loop then it seem the automaton is alreay minimized
         if (i == 1) {
             System.out.println("Already minimized");
-            return null;
+            return this;
         }
 
         // we create the automaton minimized

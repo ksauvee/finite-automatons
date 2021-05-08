@@ -12,12 +12,7 @@ public class Main {
             Scanner keyboardInputAutomatonNumber = new Scanner(System.in);
             //we ask to the user what Automaton he wants to test
             int automatonNumber = keyboardInputAutomatonNumber.nextInt();
-            String automatonFileName = "./resources/Test";
-
-            //if the number is < 10 then we have to put a '0' in the file name
-            if (automatonNumber < 10) {
-                automatonFileName+="0";
-            }
+            String automatonFileName = "./resources/Tests/A3-";
 
             automatonFileName += automatonNumber +".txt";
             System.out.printf("L'Automate selectionne est %s\n", automatonFileName);
@@ -64,7 +59,7 @@ public class Main {
                         deterministAutomaton = testedAutomaton.determinisationSync();
                         completeAutomaton = deterministAutomaton.completion();
                     }
-                    System.out.println("Voici l'automate déterminise");
+                    System.out.println("Voici l'automate determinise");
                     completeAutomaton.printAutomaton();
                 }
                 case "m"-> {
@@ -93,7 +88,7 @@ public class Main {
                             }
                         }while(!goodInput);
                     }
-                    System.out.println("Voici l'automate déterminise");
+                    System.out.println("Voici l'automate determinise");
                     deterministAutomaton.printAutomaton();
                     System.out.println("\n\nVoici l'automate minimise");
                     minimalAutomaton = deterministAutomaton.completion().minimization();
