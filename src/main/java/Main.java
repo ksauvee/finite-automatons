@@ -57,8 +57,8 @@ public class Main {
                         }while(!goodInput);
                     }else{
                         deterministAutomaton = testedAutomaton.determinisationSync();
-                        completeAutomaton = deterministAutomaton.completion();
                     }
+                    completeAutomaton = deterministAutomaton.completion();
                     System.out.println("Voici l'automate determinise");
                     completeAutomaton.printAutomaton();
                 }
