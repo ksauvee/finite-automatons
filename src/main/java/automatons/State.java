@@ -1,4 +1,4 @@
-package main.java.automatons;
+package automatons;
 
 import java.util.*;
 

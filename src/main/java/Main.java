@@ -1,8 +1,4 @@
-package main.java;
-
-import main.java.automatons.Automaton;
-import main.java.automatons.State;
-import main.java.automatons.User;
+import automatons.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
