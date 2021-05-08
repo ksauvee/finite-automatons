@@ -509,15 +509,21 @@ public class Automaton {
         for (State states : synchronizedAutomaton.getStates()) {
             for (State epsilon_states : states.getEpsilonTransitions()) {
                 for (String key : synchronizedAutomaton.autAlph) {
-                    states.getNeighbours().get(key).addAll(epsilon_states.getNeighbours().get(key));
+                    if (states.getNeighbours().containsKey(key)) {
+                        if (epsilon_states.getNeighbours().containsKey(key)) {
+                            states.getNeighbours().get(key).addAll(epsilon_states.getNeighbours().get(key));
+                        }
+                    }
                 }
             }
         }
         for (State states : synchronizedAutomaton.getStates()) {
             for (String letter : synchronizedAutomaton.autAlph) {
-                LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<>(states.getNeighbours().get(letter));
-                states.getNeighbours().get(letter).clear();
-                states.getNeighbours().get(letter).addAll(hSetNeighbours);
+                if (states.getNeighbours().containsKey(letter)) {
+                    LinkedHashSet<String> hSetNeighbours = new LinkedHashSet<>(states.getNeighbours().get(letter));
+                    states.getNeighbours().get(letter).clear();
+                    states.getNeighbours().get(letter).addAll(hSetNeighbours);
+                }
             }
         }
         if (print) {
@@ -624,7 +630,7 @@ public class Automaton {
         int nbSupTransitions = 0;
 
         Automaton completeAutomaton = new Automaton(this);
-        LinkedList<State> newStates = completeAutomaton.getStates();
+        LinkedList<State> newStates = completeAutomaton.getStatesImprove();
 
         State garbage = new State("P");
         newStates.add(garbage);
