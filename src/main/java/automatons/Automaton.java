@@ -87,7 +87,7 @@ public class Automaton {
         for (int i = 0; i < nbTransitions; ++i) {
             int j = 0;
             StringBuilder initialState = new StringBuilder();
-            while (automatonCharacteristics.get(5+i).charAt(j) < 97 || automatonCharacteristics.get(5+i).charAt(j) > 122) {
+            while ((automatonCharacteristics.get(5+i).charAt(j) < 97 || automatonCharacteristics.get(5+i).charAt(j) > 122) && automatonCharacteristics.get(5+i).charAt(j) != '*') {
                 initialState.append(automatonCharacteristics.get(5 + i).charAt(j));
                 j++;
             }
@@ -743,8 +743,9 @@ public class Automaton {
         }
 
         // if we pass only one time in the loop then it seem the automaton is alreay minimized
-        if (i == 0) {
+        if (i == 1) {
             System.out.println("Already minimized");
+            return null;
         }
 
         // we create the automaton minimized
@@ -780,6 +781,7 @@ public class Automaton {
         }
 
         // finally we find the new entries and exits
+        int nbState = 0;
         for (State state : newStates) {
             boolean stateIsInit = false;
             boolean stateIsExit = false;
@@ -797,16 +799,19 @@ public class Automaton {
                     if (state1.getId().equals(String.valueOf(index))) {
                         if (!stateIsInit && state1.getIsInit()) {
                             stateIsInit = true;
+                            newStates.get(nbState).setIsInit(true);
                             automatonMinimized.setNbInitStates(automatonMinimized.getNbInitStates() + 1);
                         }
 
                         if (!stateIsExit && state1.getIsExit()) {
                             stateIsExit = true;
+                            newStates.get(nbState).setIsExit(true);
                             automatonMinimized.setNbExitStates(automatonMinimized.getNbExitStates() + 1);
                         }
                     }
                 }
             }
+            nbState++;
         }
 
         automatonMinimized.setNbStates(newStates.size());
@@ -873,6 +878,7 @@ public class Automaton {
             }
             myWriter.write("\n");
 
+            myWriter.write(nbExitStates + " ");
             for (String exitId : exits) {
                 myWriter.write(exitId + " ");
             }

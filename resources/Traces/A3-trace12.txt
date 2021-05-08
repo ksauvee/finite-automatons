@@ -1,0 +1,16 @@
+4
+3
+1 1 
+1 1 
+11
+PaP
+PbP
+PcP
+PdP
+0aP
+0b0
+0cP
+1a1
+1bP
+1c1
+1dP
