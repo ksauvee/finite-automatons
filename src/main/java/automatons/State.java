@@ -1,4 +1,5 @@
-package automatons;
+package main.java.automatons;
+
 import java.util.*;
 
 import java.util.HashMap;
@@ -184,7 +185,7 @@ public class State {
                 newStateNeighbour.append(number).append(".");
             }
         }
-        MyString myStringNeighbour = new MyString (newStateNeighbour.toString());
+        MyString myStringNeighbour = new MyString(newStateNeighbour.toString());
         newStateNeighbour = new StringBuilder(myStringNeighbour.removeDuplicates());
 
         neighbours.get(letter).clear(); // on clear à nouveau la liste de nos voisins

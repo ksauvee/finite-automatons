@@ -1,4 +1,4 @@
-package automatons;
+package main.java.automatons;
 
 import java.io.FileWriter;
 import java.io.IOException;
