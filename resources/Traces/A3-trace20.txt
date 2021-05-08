@@ -1,0 +1,25 @@
+4
+6
+1 0.1.6.7.8 
+1 5 
+20
+PaP
+PbP
+PcP
+PdP
+2aP
+2b3
+2cP
+2dP
+3aP
+3bP
+3c4
+3dP
+4aP
+4bP
+4cP
+4d5
+5aP
+5bP
+5cP
+5dP

@@ -1,0 +1,25 @@
+4
+5
+1 0 
+1 1 
+20
+PaP
+PbP
+PcP
+PdP
+0a0
+0b2
+0c3
+0d1
+1aP
+1bP
+1cP
+1d1
+2aP
+2b2
+2c3
+2d1
+3aP
+3bP
+3c3
+3d1
