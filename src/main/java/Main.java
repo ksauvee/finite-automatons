@@ -313,11 +313,8 @@ public class Main {
 
         //Construire l'automate avec son constructeur (synchrone ou non ?, la taille de son alphabet" et la liste des états construite)
         Automaton a = new Automaton(a_states, true, 2);
-        //Afficher Automate de départ
-        //System.out.println("Automate de départ");
         a.printAutomaton();
-        System.out.println("Automate déterminisé");
-        //System.out.println("alphabet: "+a.aut_alph.toString());
+        System.out.println("Automate determinise");
         a.determinisationAsync(true).printAutomaton();
 
     }
